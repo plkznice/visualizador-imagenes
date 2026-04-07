@@ -1,0 +1,14 @@
+{
+  "name": "@xrai/extension-dictation",
+  "version": "1.0.0",
+  "description": "XRAI dictation panel for OHIF Viewer",
+  "author": "Diego / CMFyC Mendoza",
+  "license": "MIT",
+  "main": "src/index.tsx",
+  "module": "src/index.tsx",
+  "peerDependencies": {
+    "@ohif/core": "*",
+    "react": "^18.0.0"
+  },
+  "dependencies": {}
+}

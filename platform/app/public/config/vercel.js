@@ -15,6 +15,11 @@ window.config = {
     maxNumPrefetchRequests: 10,
     order: 'closest',
   },
+  // Configuración XRAI — reemplazá con la URL real y tus credenciales
+  xraiApiUrl: 'https://xrai.vercel.app',
+  xraiApiKey: 'REEMPLAZAR_CON_TU_API_KEY',
+  xraiClinicId: 'REEMPLAZAR_CON_TU_CLINIC_ID',
+
   defaultDataSourceName: 'orthanc',
   dataSources: [
     {
