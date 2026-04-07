@@ -1,5 +1,12 @@
+/**
+ * Servicios de comunicación con la API externa (Backend XRAI).
+ * Separa la lógica de peticiones HTTP de los componentes visuales de React.
+ */
 import { Template, TemplateSection, GeneratedSections, OrganKeyword } from '../types/dictation';
 
+/**
+ * Obtiene la lista de plantillas disponibles para una clínica específica.
+ */
 export async function fetchTemplates(apiUrl: string, apiKey: string, clinicId: string): Promise<Template[]> {
   const res = await fetch(`${apiUrl}/api/ext/templates?clinicId=${clinicId}`, {
     headers: { 'x-api-key': apiKey },
@@ -8,6 +15,9 @@ export async function fetchTemplates(apiUrl: string, apiKey: string, clinicId: s
   return res.json();
 }
 
+/**
+ * Envía el audio grabado para un solo órgano a la IA para que procese el dictado.
+ */
 export async function dictateOrgan(
   apiUrl: string,
   apiKey: string,
@@ -15,10 +25,12 @@ export async function dictateOrgan(
   keywords: OrganKeyword[],
   audio: Blob
 ): Promise<{ text: string; transcript: string }> {
+  // Utilizamos FormData para enviar el archivo de audio (.webm)
   const fd = new FormData();
   fd.append('organName', organName);
   fd.append('keywords', JSON.stringify(keywords));
   fd.append('audio', new File([audio], 'audio.webm', { type: audio.type }));
+  
   const res = await fetch(`${apiUrl}/api/ext/dictation`, {
     method: 'POST',
     headers: { 'x-api-key': apiKey },
@@ -31,6 +43,10 @@ export async function dictateOrgan(
   return res.json();
 }
 
+/**
+ * Envía la grabación completa para todo el informe, 
+ * encargando a la IA que distribuya el texto en las diferentes secciones y órganos.
+ */
 export async function dictateFull(
   apiUrl: string,
   apiKey: string,
@@ -40,6 +56,7 @@ export async function dictateFull(
   const fd = new FormData();
   fd.append('sections', JSON.stringify(sections));
   fd.append('audio', new File([audio], 'audio.webm', { type: audio.type }));
+  
   const res = await fetch(`${apiUrl}/api/ext/dictation`, {
     method: 'POST',
     headers: { 'x-api-key': apiKey },
@@ -52,6 +69,10 @@ export async function dictateFull(
   return res.json();
 }
 
+/**
+ * Envía el contenido HTML estructurado del reporte para que la API
+ * lo convierta en un archivo PDF descargable.
+ */
 export async function generatePdfReport(
   apiUrl: string,
   apiKey: string,
@@ -59,6 +80,7 @@ export async function generatePdfReport(
   htmlContent: string,
   conclusion: string
 ): Promise<Blob> {
+  // Creamos el body con los datos del paciente mockeados y el contenido real
   const body = {
     clinicName: 'Bio Imágenes Mendoza',
     clinicAddress: '',
@@ -80,5 +102,5 @@ export async function generatePdfReport(
   });
 
   if (!res.ok) throw new Error('Error generando el PDF');
-  return res.blob();
+  return res.blob(); // Devolvemos el archivo binario
 }

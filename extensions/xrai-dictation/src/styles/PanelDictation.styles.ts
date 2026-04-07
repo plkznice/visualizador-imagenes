@@ -1,6 +1,12 @@
+/**
+ * Diccionario centralizado de los estilos de la aplicación.
+ * Utiliza CSS-in-JS (objetos inline estáticos) para separar el diseño
+ * de la arquitectura y la lógica renderizada.
+ */
 import type { CSSProperties } from 'react';
 
 export const styles: Record<string, CSSProperties> = {
+  // Contenedor mayor de todo el panel lateral derecho
   container: {
     padding: '12px',
     color: '#e2e8f0',
@@ -9,6 +15,8 @@ export const styles: Record<string, CSSProperties> = {
     overflowY: 'auto',
     background: '#1a1f2e',
   },
+  
+  // Encabezado superior
   header: {
     display: 'flex',
     alignItems: 'center',
@@ -19,6 +27,8 @@ export const styles: Record<string, CSSProperties> = {
   },
   headerIcon: { fontSize: '18px' },
   headerTitle: { fontWeight: 700, fontSize: '15px', color: '#fff' },
+  
+  // Reglas estructurales para módulos de separación vertical
   section: { marginBottom: '16px' },
   sectionTitle: {
     fontWeight: 600,
@@ -32,6 +42,8 @@ export const styles: Record<string, CSSProperties> = {
     alignItems: 'center',
   },
   label: { display: 'block', marginBottom: '4px', fontSize: '12px', color: '#a0aec0' },
+  
+  // Controles de formulario
   select: {
     width: '100%',
     padding: '6px 8px',
@@ -41,6 +53,8 @@ export const styles: Record<string, CSSProperties> = {
     borderRadius: '6px',
     fontSize: '13px',
   },
+  
+  // Botonería Primaria ("Call to Actions" fuertes)
   primaryBtn: {
     width: '100%',
     padding: '10px',
@@ -53,6 +67,8 @@ export const styles: Record<string, CSSProperties> = {
     fontSize: '13px',
   },
   recordingBtn: { background: '#e53e3e', animation: 'pulse 1s infinite' },
+  
+  // Botonería Secundaria
   secondaryBtn: {
     width: '100%',
     padding: '8px',
@@ -73,6 +89,8 @@ export const styles: Record<string, CSSProperties> = {
     borderRadius: '4px',
     cursor: 'pointer',
   },
+  
+  // Cartas individuales de Órganos editables
   organRow: {
     marginBottom: '10px',
     background: '#2d3748',
@@ -108,6 +126,8 @@ export const styles: Record<string, CSSProperties> = {
     fontFamily: 'inherit',
     boxSizing: 'border-box',
   },
+  
+  // Contenedores del reporte ya generado visualmente
   reportSection: {
     marginBottom: '12px',
     background: '#2d3748',
@@ -126,6 +146,8 @@ export const styles: Record<string, CSSProperties> = {
     lineHeight: 1.6,
     color: '#e2e8f0',
   },
+  
+  // Feedback y mensajes de Estado del sistema
   errorBanner: {
     background: '#742a2a',
     color: '#fc8181',
@@ -136,6 +158,8 @@ export const styles: Record<string, CSSProperties> = {
   },
   errorText: { color: '#fc8181', fontSize: '11px', margin: '4px 0 0' },
   info: { color: '#a0aec0', fontSize: '12px', textAlign: 'center', padding: '20px 0' },
+  
+  // Generador bloqueado y flotante pegado en el borde inferior
   pdfSection: {
     position: 'sticky' as const,
     bottom: 0,
