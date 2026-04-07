@@ -1,6 +1,6 @@
 import React from 'react';
 import { id } from './id';
-import PanelDictation from './PanelDictation';
+import PanelDictation from './components/PanelDictation';
 import type { Types } from '@ohif/core';
 
 function getPanelModule() {
