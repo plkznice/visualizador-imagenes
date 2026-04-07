@@ -175,7 +175,11 @@ function OrganMicButton({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         style={styles.organTextarea}
-        placeholder={`Hallazgo de ${organ.name}...`}
+        placeholder={
+          organ.keywords.length > 0
+            ? organ.keywords.map((kw) => kw.keyword).join(' · ')
+            : `Hallazgo de ${organ.name}...`
+        }
         rows={2}
       />
       {error && <p style={styles.errorText}>{error}</p>}
@@ -200,6 +204,8 @@ export default function PanelDictation() {
   const [report, setReport] = useState<GeneratedSections | null>(null);
   const [fullRecState, setFullRecState] = useState<RecordingState>('idle');
   const { start, stop } = useAudioRecorder();
+
+  const [generatingPdf, setGeneratingPdf] = useState(false);
 
   // Carga de templates
   useEffect(() => {
@@ -278,6 +284,55 @@ export default function PanelDictation() {
       }
     }
     setReport(generated);
+  };
+
+  // Generar PDF y abrir en blob
+  const handleGeneratePdf = async () => {
+    if (!report || !selectedTemplate) return;
+    setGeneratingPdf(true);
+    try {
+      // Construir htmlContent con todas las secciones
+      const htmlContent = selectedTemplate.sections
+        .map((s) => {
+          const content = report[s.key];
+          if (!content || s.key === 'CONCLUSION') return '';
+          return `<h2>${s.label}</h2>${content}`;
+        })
+        .filter(Boolean)
+        .join('');
+
+      const conclusion = report['CONCLUSION'] ?? '';
+
+      const body = {
+        clinicName: 'Bio Imágenes Mendoza',
+        clinicAddress: '',
+        clinicPhone: '',
+        patientName: 'Paciente',
+        patientDoc: '-',
+        patientAge: '-',
+        studyName: selectedTemplate.name,
+        date: new Date().toLocaleDateString('es-AR'),
+        htmlContent,
+        conclusion,
+        doctorName: 'Médico',
+      };
+
+      const res = await fetch(`${cfg.apiUrl}/api/ext/pdf`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-api-key': cfg.apiKey },
+        body: JSON.stringify(body),
+      });
+
+      if (!res.ok) throw new Error('Error generando el PDF');
+
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      window.open(url, '_blank');
+    } catch (e: any) {
+      setError(e.message);
+    } finally {
+      setGeneratingPdf(false);
+    }
   };
 
   // Copiar informe al portapapeles como texto plano
@@ -381,6 +436,19 @@ export default function PanelDictation() {
                   </div>
                 );
               })}
+            </div>
+          )}
+
+          {/* Botón PDF — siempre visible al final */}
+          {report && (
+            <div style={styles.pdfSection}>
+              <button
+                onClick={handleGeneratePdf}
+                disabled={generatingPdf}
+                style={styles.pdfBtn}
+              >
+                {generatingPdf ? '⏳  Generando PDF...' : '📄  Generar informe PDF'}
+              </button>
             </div>
           )}
         </>
@@ -530,4 +598,24 @@ const styles: Record<string, React.CSSProperties> = {
   },
   errorText: { color: '#fc8181', fontSize: '11px', margin: '4px 0 0' },
   info: { color: '#a0aec0', fontSize: '12px', textAlign: 'center', padding: '20px 0' },
+  pdfSection: {
+    position: 'sticky' as const,
+    bottom: 0,
+    background: '#1a1f2e',
+    paddingTop: '12px',
+    paddingBottom: '8px',
+    borderTop: '1px solid #2d3748',
+    marginTop: '8px',
+  },
+  pdfBtn: {
+    width: '100%',
+    padding: '12px',
+    background: 'linear-gradient(135deg, #6830B8, #C43A88)',
+    color: '#fff',
+    border: 'none',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    fontWeight: 700,
+    fontSize: '14px',
+  },
 };

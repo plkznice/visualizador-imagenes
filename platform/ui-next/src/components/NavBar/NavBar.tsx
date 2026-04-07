@@ -23,7 +23,7 @@ const NavBar = ({
         className
       )}
     >
-      <div className="container mx-auto">{children}</div>
+      <div className="w-full px-4">{children}</div>
     </div>
   );
 };

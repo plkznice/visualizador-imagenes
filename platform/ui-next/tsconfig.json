@@ -2,6 +2,8 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "baseUrl": ".",
+    "rootDir": ".",
+    "moduleResolution": "bundler",
     "paths": {
       "@ui/*": ["./src/*"],
       "@ohif/core": ["../core/src"],
