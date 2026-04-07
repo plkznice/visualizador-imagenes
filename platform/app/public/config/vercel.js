@@ -23,9 +23,9 @@ window.config = {
       configuration: {
         friendlyName: 'Bio Imagenes Orthanc',
         name: 'Orthanc',
-        wadoUriRoot: 'https://delete-restrictions-keyword-suggested.trycloudflare.com/wado',
-        qidoRoot: 'https://delete-restrictions-keyword-suggested.trycloudflare.com/dicom-web',
-        wadoRoot: 'https://delete-restrictions-keyword-suggested.trycloudflare.com/dicom-web',
+        wadoUriRoot: 'https://card-openings-engage-def.trycloudflare.com/wado',
+        qidoRoot: 'https://card-openings-engage-def.trycloudflare.com/dicom-web',
+        wadoRoot: 'https://card-openings-engage-def.trycloudflare.com/dicom-web',
         qidoSupportsIncludeField: false,
         imageRendering: 'wadors',
         thumbnailRendering: 'wadors',
