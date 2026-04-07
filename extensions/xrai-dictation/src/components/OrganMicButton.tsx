@@ -32,8 +32,8 @@ export function OrganMicButton({
       try {
         const result = await dictateOrgan(apiUrl, apiKey, organ.name, organ.keywords, audio);
         onChange(result.text);
-      } catch (e: any) {
-        setError(e.message);
+      } catch (e: unknown) {
+        setError(e instanceof Error ? e.message : 'Error en dictado');
       } finally {
         setState('idle');
       }

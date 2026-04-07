@@ -1,11 +1,26 @@
-// Configuración de conexión con XRAI
-// Estos valores se pueden sobrescribir desde window.config en vercel.js
+interface XraiWindowConfig {
+  xraiApiUrl?: string;
+  xraiApiKey?: string;
+  xraiClinicId?: string;
+}
 
-export function getXraiConfig() {
-  const cfg = (window as any).config ?? {};
+declare global {
+  interface Window {
+    config?: XraiWindowConfig & Record<string, unknown>;
+  }
+}
+
+export interface XraiConfig {
+  apiUrl: string;
+  apiKey: string;
+  clinicId: string;
+}
+
+export function getXraiConfig(): XraiConfig {
+  const cfg = window.config ?? {};
   return {
-    apiUrl: (cfg.xraiApiUrl as string) ?? 'http://localhost:3001',
-    apiKey: (cfg.xraiApiKey as string) ?? '',
-    clinicId: (cfg.xraiClinicId as string) ?? '',
+    apiUrl: cfg.xraiApiUrl ?? 'http://localhost:3001',
+    apiKey: cfg.xraiApiKey ?? '',
+    clinicId: cfg.xraiClinicId ?? '',
   };
 }
