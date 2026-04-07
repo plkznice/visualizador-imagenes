@@ -215,14 +215,26 @@ export function onModeExit({ servicesManager }: withAppTypes) {
 
 export const toolbarSections = {
   [TOOLBAR_SECTIONS.primary]: [
-    'MeasurementTools',
-    'Zoom',
-    'Pan',
-    'TrackballRotate',
+    // Navegación
     'WindowLevel',
+    'Pan',
+    'Zoom',
+    'StackScroll',
+    'TrackballRotate',
+    'Crosshairs',
+    // Mediciones
+    'MeasurementTools',
+    // Imagen
+    'Reset',
+    'rotate-right',
+    'flipHorizontal',
+    'invert',
+    'Magnify',
+    'Cine',
+    // Captura y layout
     'Capture',
     'Layout',
-    'Crosshairs',
+    // Herramientas avanzadas
     'MoreTools',
   ],
 
@@ -254,24 +266,17 @@ export const toolbarSections = {
     'RectangleROI',
     'CircleROI',
     'PlanarFreehandROI',
+    'Angle',
+    'CobbAngle',
     'SplineROI',
     'LivewireContour',
   ],
 
   MoreTools: [
-    'Reset',
-    'rotate-right',
-    'flipHorizontal',
     'ImageSliceSync',
     'ReferenceLines',
     'ImageOverlayViewer',
-    'StackScroll',
-    'invert',
     'Probe',
-    'Cine',
-    'Angle',
-    'CobbAngle',
-    'Magnify',
     'CalibrationLine',
     'TagBrowser',
     'AdvancedMagnify',

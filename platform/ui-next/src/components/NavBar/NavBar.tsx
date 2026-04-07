@@ -17,13 +17,13 @@ const NavBar = ({
   return (
     <div
       className={classnames(
-        'bg-popover z-20 border-background px-1',
+        'bg-popover z-20 border-background',
         isSticky && stickyClasses,
         !isSticky && notStickyClasses,
         className
       )}
     >
-      {children}
+      <div className="container mx-auto">{children}</div>
     </div>
   );
 };
