@@ -25,9 +25,7 @@ export default function PanelDictation() {
     handleTemplateChange,
     handleOrganChange,
     handleFullDictation,
-    handleGenerateFromOrgans,
     handleGeneratePdf,
-    copyReport,
   } = useDictation();
 
   return (
@@ -88,47 +86,27 @@ export default function PanelDictation() {
                   apiKey={cfg.apiKey}
                 />
               ))}
-              <button onClick={handleGenerateFromOrgans} style={styles.secondaryBtn}>
-                📄  Generar informe desde órganos
-              </button>
-            </div>
-          )}
-
-          {/* Renderizado de Previsualización: Presenta de forma estática los resultados ensamblados de la IA */}
-          {report && selectedTemplate && (
-            <div style={styles.section}>
-              <div style={styles.sectionTitle}>
-                Vista previa
-                <button onClick={copyReport} style={styles.copyBtn}>📋 Copiar</button>
-              </div>
-              {selectedTemplate.sections.map((s) => {
-                const content = report[s.key];
-                if (!content) return null;
-                return (
-                  <div key={s.key} style={styles.reportSection}>
-                    <div style={styles.reportSectionTitle}>{s.label}</div>
-                    <div
-                      style={styles.reportContent}
-                      dangerouslySetInnerHTML={{ __html: content }}
-                    />
-                  </div>
-                );
-              })}
             </div>
           )}
 
           {/* Generador Estático Fijo debajo (Floating Bar) */}
-          {report && (
-            <div style={styles.pdfSection}>
-              <button
-                onClick={handleGeneratePdf}
-                disabled={generatingPdf}
-                style={styles.pdfBtn}
-              >
-                {generatingPdf ? '⏳  Generando PDF...' : '📄  Generar informe PDF'}
-              </button>
-            </div>
-          )}
+          {(() => {
+            const hasContent = Object.values(organTexts).some((v) => v.trim().length > 0);
+            return (
+              <div style={styles.pdfSection}>
+                <button
+                  onClick={handleGeneratePdf}
+                  disabled={generatingPdf || !hasContent}
+                  style={{
+                    ...styles.pdfBtn,
+                    ...(!hasContent ? { opacity: 0.4, cursor: 'not-allowed' } : {}),
+                  }}
+                >
+                  {generatingPdf ? '⏳  Generando PDF...' : '📄  Generar informe PDF'}
+                </button>
+              </div>
+            );
+          })()}
         </>
       )}
 

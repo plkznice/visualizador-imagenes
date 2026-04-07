@@ -147,14 +147,26 @@ export function useDictation() {
    * Agrupa todo el HTML visible y le solicita al backend transformarlo a PDF.
    */
   const handleGeneratePdf = async () => {
-    if (!report || !selectedTemplate) return;
+    if (!selectedTemplate) return;
     setGeneratingPdf(true);
-    
+
     try {
-      // Unimos todo en un gran HTML
+      // Usar report si existe (dictado completo), sino construir desde organTexts
+      const activeReport: GeneratedSections = report ?? (() => {
+        const generated: GeneratedSections = {};
+        for (const s of selectedTemplate.sections) {
+          if (s.aiRole === 'fill_from_dictation') {
+            generated[s.key] = buildHallazgosHtml();
+          } else if (s.aiRole === 'use_default' || s.aiRole === 'manual') {
+            generated[s.key] = s.defaultValue;
+          }
+        }
+        return generated;
+      })();
+
       const htmlContent = selectedTemplate.sections
         .map((s) => {
-          const content = report[s.key];
+          const content = activeReport[s.key];
           if (!content || s.key === 'CONCLUSION') return '';
           return `<h2>${s.label}</h2>${content}`;
         })
@@ -166,7 +178,7 @@ export function useDictation() {
         cfg.apiKey,
         selectedTemplate.name,
         htmlContent,
-        report['CONCLUSION'] ?? ''
+        activeReport['CONCLUSION'] ?? ''
       );
 
       // Usar URL interna para habilitar visualización nativa en una pestaña nueva del browser
