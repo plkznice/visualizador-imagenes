@@ -23,9 +23,9 @@ window.config = {
       configuration: {
         friendlyName: 'Bio Imagenes Orthanc',
         name: 'Orthanc',
-        wadoUriRoot: 'https://accent-dairy-because-calendar.trycloudflare.com/wado',
-        qidoRoot: 'https://accent-dairy-because-calendar.trycloudflare.com/dicom-web',
-        wadoRoot: 'https://accent-dairy-because-calendar.trycloudflare.com/dicom-web',
+        wadoUriRoot: 'https://jolynn-puritanical-olimpia.ngrok-free.dev/wado',
+        qidoRoot: 'https://jolynn-puritanical-olimpia.ngrok-free.dev/dicom-web',
+        wadoRoot: 'https://jolynn-puritanical-olimpia.ngrok-free.dev/dicom-web',
         qidoSupportsIncludeField: false,
         imageRendering: 'wadors',
         thumbnailRendering: 'wadors',
