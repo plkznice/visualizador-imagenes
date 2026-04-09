@@ -28,9 +28,9 @@ window.config = {
       configuration: {
         friendlyName: 'Bio Imagenes Orthanc',
         name: 'Orthanc',
-        wadoUriRoot: 'https://camera-reynolds-acrylic-linear.trycloudflare.com/wado',
-        qidoRoot: 'https://camera-reynolds-acrylic-linear.trycloudflare.com/dicom-web',
-        wadoRoot: 'https://camera-reynolds-acrylic-linear.trycloudflare.com/dicom-web',
+        wadoUriRoot: 'https://measurements-optical-communities-motorola.trycloudflare.com/wado',
+        qidoRoot: 'https://measurements-optical-communities-motorola.trycloudflare.com/dicom-web',
+        wadoRoot: 'https://measurements-optical-communities-motorola.trycloudflare.com/dicom-web',
         qidoSupportsIncludeField: false,
         imageRendering: 'wadors',
         thumbnailRendering: 'wadors',
