@@ -31,6 +31,11 @@ window.config = {
         thumbnailRendering: 'wadors',
         dicomUploadEnabled: true,
         omitQuotationForMultipartRequest: true,
+        requestOptions: {
+          headers: {
+            'ngrok-skip-browser-warning': '1',
+          },
+        },
       },
     },
     {
