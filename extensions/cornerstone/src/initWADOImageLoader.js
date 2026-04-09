@@ -36,6 +36,7 @@ export default function initWADOImageLoader(
       );
 
       const xhrRequestHeaders = {
+        ...sourceConfig.requestOptions?.headers,
         Accept: acceptHeader,
       };
 
