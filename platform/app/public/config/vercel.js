@@ -28,9 +28,9 @@ window.config = {
       configuration: {
         friendlyName: 'Bio Imagenes Orthanc',
         name: 'Orthanc',
-        wadoUriRoot: 'https://greene-kingdom-doll-learned.trycloudflare.com/wado',
-        qidoRoot: 'https://greene-kingdom-doll-learned.trycloudflare.com/dicom-web',
-        wadoRoot: 'https://greene-kingdom-doll-learned.trycloudflare.com/dicom-web',
+        wadoUriRoot: 'https://respectively-nations-away-sleeve.trycloudflare.com/wado',
+        qidoRoot: 'https://respectively-nations-away-sleeve.trycloudflare.com/dicom-web',
+        wadoRoot: 'https://respectively-nations-away-sleeve.trycloudflare.com/dicom-web',
         qidoSupportsIncludeField: false,
         imageRendering: 'wadors',
         thumbnailRendering: 'wadors',
