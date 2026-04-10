@@ -21,6 +21,7 @@ export const extensionDependencies = {
   // Can derive the versions at least process.env.from npm_package_version
   ...basicDependencies,
   '@ohif/extension-measurement-tracking': '^3.0.0',
+  '@xrai/extension-dictation': '*',
 };
 
 export const longitudinalInstance = {
@@ -29,7 +30,7 @@ export const longitudinalInstance = {
   props: {
     ...basicLayout.props,
     leftPanels: [tracked.thumbnailList],
-    rightPanels: [cornerstone.segmentation, tracked.measurements],
+    rightPanels: ['@xrai/extension-dictation.panelModule.xraiDictation', cornerstone.segmentation, tracked.measurements],
     viewports: [
       {
         namespace: tracked.viewport,

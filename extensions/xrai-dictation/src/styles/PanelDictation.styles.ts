@@ -1,0 +1,183 @@
+/**
+ * Diccionario centralizado de los estilos de la aplicación.
+ * Utiliza CSS-in-JS (objetos inline estáticos) para separar el diseño
+ * de la arquitectura y la lógica renderizada.
+ */
+import type { CSSProperties } from 'react';
+
+export const styles: Record<string, CSSProperties> = {
+  // Contenedor mayor de todo el panel lateral derecho
+  container: {
+    padding: '12px',
+    color: '#e2e8f0',
+    fontSize: '13px',
+    height: '100%',
+    overflowY: 'auto',
+    background: '#1a1f2e',
+  },
+  
+  // Encabezado superior
+  header: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    marginBottom: '16px',
+    paddingBottom: '8px',
+    borderBottom: '1px solid #2d3748',
+  },
+  headerIcon: { fontSize: '18px' },
+  headerTitle: { fontWeight: 700, fontSize: '15px', color: '#fff' },
+  
+  // Reglas estructurales para módulos de separación vertical
+  section: { marginBottom: '16px' },
+  sectionTitle: {
+    fontWeight: 600,
+    fontSize: '12px',
+    textTransform: 'uppercase',
+    letterSpacing: '0.05em',
+    color: '#90cdf4',
+    marginBottom: '8px',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  label: { display: 'block', marginBottom: '4px', fontSize: '12px', color: '#a0aec0' },
+  
+  // Controles de formulario
+  select: {
+    width: '100%',
+    padding: '6px 8px',
+    background: '#2d3748',
+    color: '#e2e8f0',
+    border: '1px solid #4a5568',
+    borderRadius: '6px',
+    fontSize: '13px',
+  },
+  
+  // Botonería Primaria ("Call to Actions" fuertes)
+  primaryBtn: {
+    width: '100%',
+    padding: '10px',
+    background: '#3182ce',
+    color: '#fff',
+    border: 'none',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    fontWeight: 600,
+    fontSize: '13px',
+  },
+  recordingBtn: { background: '#e53e3e', animation: 'pulse 1s infinite' },
+  
+  // Botonería Secundaria
+  secondaryBtn: {
+    width: '100%',
+    padding: '8px',
+    background: '#2d3748',
+    color: '#90cdf4',
+    border: '1px solid #4a5568',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    fontSize: '13px',
+    marginTop: '8px',
+  },
+  copyBtn: {
+    fontSize: '11px',
+    padding: '2px 8px',
+    background: '#2d3748',
+    color: '#a0aec0',
+    border: '1px solid #4a5568',
+    borderRadius: '4px',
+    cursor: 'pointer',
+  },
+  
+  // Cartas individuales de Órganos editables
+  organRow: {
+    marginBottom: '10px',
+    background: '#2d3748',
+    borderRadius: '8px',
+    padding: '8px',
+  },
+  organHeader: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: '4px',
+  },
+  organName: { fontWeight: 600, color: '#e2e8f0', fontSize: '13px' },
+  micBtn: {
+    background: 'transparent',
+    border: '1px solid #4a5568',
+    borderRadius: '6px',
+    cursor: 'pointer',
+    fontSize: '16px',
+    padding: '2px 6px',
+    color: '#e2e8f0',
+  },
+  micBtnActive: { background: '#e53e3e', border: '1px solid #e53e3e' },
+  organTextarea: {
+    width: '100%',
+    padding: '6px',
+    background: '#1a202c',
+    color: '#e2e8f0',
+    border: '1px solid #4a5568',
+    borderRadius: '6px',
+    fontSize: '12px',
+    resize: 'vertical',
+    fontFamily: 'inherit',
+    boxSizing: 'border-box',
+  },
+  
+  // Contenedores del reporte ya generado visualmente
+  reportSection: {
+    marginBottom: '12px',
+    background: '#2d3748',
+    borderRadius: '8px',
+    padding: '10px',
+  },
+  reportSectionTitle: {
+    fontWeight: 700,
+    fontSize: '11px',
+    textTransform: 'uppercase',
+    color: '#90cdf4',
+    marginBottom: '6px',
+  },
+  reportContent: {
+    fontSize: '12px',
+    lineHeight: 1.6,
+    color: '#e2e8f0',
+  },
+  
+  // Feedback y mensajes de Estado del sistema
+  errorBanner: {
+    background: '#742a2a',
+    color: '#fc8181',
+    padding: '8px 12px',
+    borderRadius: '6px',
+    marginBottom: '12px',
+    fontSize: '12px',
+  },
+  errorText: { color: '#fc8181', fontSize: '11px', margin: '4px 0 0' },
+  info: { color: '#a0aec0', fontSize: '12px', textAlign: 'center', padding: '20px 0' },
+  
+  // Generador bloqueado y flotante pegado en el borde inferior
+  pdfSection: {
+    position: 'sticky' as const,
+    bottom: 0,
+    background: '#1a1f2e',
+    paddingTop: '12px',
+    paddingBottom: '8px',
+    borderTop: '1px solid #2d3748',
+    marginTop: '8px',
+  },
+  pdfBtn: {
+    width: '100%',
+    padding: '12px',
+    background: 'linear-gradient(135deg, #6830B8, #C43A88)',
+    color: '#fff',
+    border: 'none',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    fontWeight: 700,
+    fontSize: '14px',
+  },
+};

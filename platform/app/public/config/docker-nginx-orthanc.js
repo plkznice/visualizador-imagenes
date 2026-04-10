@@ -16,6 +16,11 @@ window.config = {
     maxNumPrefetchRequests: 10,
     order: 'closest',
   },
+  // XRAI — dictado por voz
+  xraiApiUrl: 'http://localhost:3001',
+  xraiApiKey: 'xrai-ext-2026-bioimagenes',
+  xraiClinicId: '4361ff84-7948-404b-b790-1939d6c1d571', // bioimagenes
+
   defaultDataSourceName: 'orthancProxy',
   dataSources: [
     {

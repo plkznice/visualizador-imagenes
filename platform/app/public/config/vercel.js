@@ -15,6 +15,11 @@ window.config = {
     maxNumPrefetchRequests: 10,
     order: 'closest',
   },
+  // Configuración XRAI — reemplazá con la URL real y tus credenciales
+  xraiApiUrl: 'http://localhost:3001',
+  xraiApiKey: 'xrai-ext-2026-bioimagenes',
+  xraiClinicId: '4361ff84-7948-404b-b790-1939d6c1d571', // bioimagenes
+
   defaultDataSourceName: 'orthanc',
   dataSources: [
     {
@@ -23,9 +28,9 @@ window.config = {
       configuration: {
         friendlyName: 'Bio Imagenes Orthanc',
         name: 'Orthanc',
-        wadoUriRoot: 'https://jolynn-puritanical-olimpia.ngrok-free.dev/wado',
-        qidoRoot: 'https://jolynn-puritanical-olimpia.ngrok-free.dev/dicom-web',
-        wadoRoot: 'https://jolynn-puritanical-olimpia.ngrok-free.dev/dicom-web',
+        wadoUriRoot: 'https://respectively-nations-away-sleeve.trycloudflare.com/wado',
+        qidoRoot: 'https://respectively-nations-away-sleeve.trycloudflare.com/dicom-web',
+        wadoRoot: 'https://respectively-nations-away-sleeve.trycloudflare.com/dicom-web',
         qidoSupportsIncludeField: false,
         imageRendering: 'wadors',
         thumbnailRendering: 'wadors',
