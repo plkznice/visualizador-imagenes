@@ -1,7 +1,6 @@
 /**
- * Componente Orquestador Principal (Smart Component).
- * Este componente es principalmente "visual" (View). Depende de `useDictation` 
- * para encargarse de toda la inteligencia operacional y estado.
+ * Panel lateral de dictado XRAI para OHIF Viewer.
+ * Componente presentacional — toda la lógica vive en useDictation.
  */
 import React from 'react';
 import { useDictation } from '../hooks/useDictation';
@@ -9,7 +8,6 @@ import { OrganMicButton } from './OrganMicButton';
 import { styles } from '../styles/PanelDictation.styles';
 
 export default function PanelDictation() {
-  // Extraemos todos los métodos y propiedades computadas provenientes de nuestro orquestador
   const {
     cfg,
     templates,
@@ -17,20 +15,24 @@ export default function PanelDictation() {
     loading,
     error,
     organTexts,
-    report,
+    conclusion,
     fullRecState,
     generatingPdf,
     selectedTemplate,
     allOrgans,
     handleTemplateChange,
     handleOrganChange,
+    handleConclusionChange,
     handleFullDictation,
     handleGeneratePdf,
   } = useDictation();
 
+  const hasContent =
+    Object.values(organTexts).some(v => v.trim().length > 0) || conclusion.trim().length > 0;
+
   return (
     <div style={styles.container}>
-      {/* Título de la Extensión */}
+      {/* Header */}
       <div style={styles.header}>
         <span style={styles.headerIcon}>🧠</span>
         <span style={styles.headerTitle}>XRAI Dictado</span>
@@ -39,24 +41,28 @@ export default function PanelDictation() {
       {error && <div style={styles.errorBanner}>{error}</div>}
       {loading && <div style={styles.info}>Cargando plantillas...</div>}
 
-      {/* Cuando tenemos plantillas listas, mostramos toda la UI interactiva */}
       {!loading && templates.length > 0 && (
         <>
-          {/* Selector principal de la plantilla */}
+          {/* Selector de plantilla */}
           <div style={styles.section}>
             <label style={styles.label}>Plantilla</label>
             <select
               value={selectedId}
-              onChange={(e) => handleTemplateChange(e.target.value)}
+              onChange={e => handleTemplateChange(e.target.value)}
               style={styles.select}
             >
-              {templates.map((t) => (
-                <option key={t.id} value={t.id}>{t.name}</option>
+              {templates.map(t => (
+                <option
+                  key={t.id}
+                  value={t.id}
+                >
+                  {t.name}
+                </option>
               ))}
             </select>
           </div>
 
-          {/* Botón dominante para hacer un "Pase entero" del dictado */}
+          {/* Botón dictar completo */}
           <div style={styles.section}>
             <button
               onClick={handleFullDictation}
@@ -72,16 +78,16 @@ export default function PanelDictation() {
             </button>
           </div>
 
-          {/* Listado dinámico construyendo la colección de órganos editables independientes */}
+          {/* Órganos */}
           {allOrgans.length > 0 && (
             <div style={styles.section}>
               <div style={styles.sectionTitle}>Dictado por órgano</div>
-              {allOrgans.map((organ) => (
+              {allOrgans.map(organ => (
                 <OrganMicButton
                   key={organ.name}
                   organ={organ}
                   value={organTexts[organ.name] ?? ''}
-                  onChange={(text) => handleOrganChange(organ.name, text)}
+                  onChange={text => handleOrganChange(organ.name, text)}
                   apiUrl={cfg.apiUrl}
                   apiKey={cfg.apiKey}
                 />
@@ -89,30 +95,42 @@ export default function PanelDictation() {
             </div>
           )}
 
-          {/* Generador Estático Fijo debajo (Floating Bar) */}
-          {(() => {
-            const hasContent = Object.values(organTexts).some((v) => v.trim().length > 0);
-            return (
-              <div style={styles.pdfSection}>
-                <button
-                  onClick={handleGeneratePdf}
-                  disabled={generatingPdf || !hasContent}
-                  style={{
-                    ...styles.pdfBtn,
-                    ...(!hasContent ? { opacity: 0.4, cursor: 'not-allowed' } : {}),
-                  }}
-                >
-                  {generatingPdf ? '⏳  Generando PDF...' : '📄  Generar informe PDF'}
-                </button>
+          {/* Conclusiones */}
+          <div style={styles.section}>
+            <div style={styles.conclusionRow}>
+              <div style={styles.conclusionHeader}>
+                <span style={styles.conclusionLabel}>Conclusión</span>
               </div>
-            );
-          })()}
+              <textarea
+                value={conclusion}
+                onChange={e => handleConclusionChange(e.target.value)}
+                style={styles.conclusionTextarea}
+                placeholder="Escribí o dictá la conclusión del informe..."
+                rows={3}
+              />
+            </div>
+          </div>
         </>
       )}
 
-      {/* Banner inofensivo de estado vacío (Empty State) */}
       {!loading && templates.length === 0 && !error && (
         <div style={styles.info}>No hay plantillas configuradas en XRAI.</div>
+      )}
+
+      {/* Footer sticky con botón PDF */}
+      {!loading && templates.length > 0 && (
+        <div style={styles.pdfSection}>
+          <button
+            onClick={handleGeneratePdf}
+            disabled={generatingPdf || !hasContent}
+            style={{
+              ...styles.pdfBtn,
+              ...(!hasContent ? { opacity: 0.4, cursor: 'not-allowed' } : {}),
+            }}
+          >
+            {generatingPdf ? '⏳  Generando PDF...' : '📄  Generar informe PDF'}
+          </button>
+        </div>
       )}
     </div>
   );

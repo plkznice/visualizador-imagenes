@@ -16,10 +16,12 @@ export function useAudioRecorder() {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     const mr = new MediaRecorder(stream);
     chunksRef.current = [];
-    
+
     // Cada vez que hay datos disponibles, los guardamos
-    mr.ondataavailable = (e) => { if (e.data.size > 0) chunksRef.current.push(e.data); };
-    
+    mr.ondataavailable = e => {
+      if (e.data.size > 0) chunksRef.current.push(e.data);
+    };
+
     mr.start();
     mediaRef.current = mr;
   }, []);
@@ -28,19 +30,22 @@ export function useAudioRecorder() {
    * Detiene la grabación, libera el recurso de micrófono y devuelve el archivo resultante.
    */
   const stop = useCallback((): Promise<Blob> => {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       const mr = mediaRef.current;
-      if (!mr) { resolve(new Blob()); return; }
-      
+      if (!mr) {
+        resolve(new Blob());
+        return;
+      }
+
       mr.onstop = () => {
         // Juntamos todos los fragmentos en un solo archivo WebM
         const blob = new Blob(chunksRef.current, { type: mr.mimeType || 'audio/webm' });
-        
+
         // Detener todas las pistas libera el micrófono en el navegador (quita el ícono de grabación)
-        mr.stream.getTracks().forEach((t) => t.stop());
+        mr.stream.getTracks().forEach(t => t.stop());
         resolve(blob);
       };
-      
+
       mr.stop();
     });
   }, []);

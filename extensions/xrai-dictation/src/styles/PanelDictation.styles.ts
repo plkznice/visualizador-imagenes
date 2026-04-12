@@ -1,80 +1,215 @@
 /**
- * Diccionario centralizado de los estilos de la aplicación.
- * Utiliza CSS-in-JS (objetos inline estáticos) para separar el diseño
- * de la arquitectura y la lógica renderizada.
+ * Diccionario centralizado de estilos del panel lateral XRAI.
+ * CSS-in-JS con objetos estáticos — sin dependencia de Tailwind.
  */
 import type { CSSProperties } from 'react';
 
+const COLOR = {
+  bg: '#0f1117',
+  surface: '#1a1f2e',
+  card: '#1e2535',
+  cardHover: '#242c3d',
+  border: '#2a3347',
+  borderLight: '#334166',
+  accent: '#4f8ef7',
+  accentDim: '#1e3a6e',
+  conclusion: '#f59e0b',
+  conclusionDim: '#3d2a06',
+  success: '#34d399',
+  error: '#f87171',
+  errorBg: '#2d1515',
+  textPrimary: '#e8edf5',
+  textSecondary: '#8896b0',
+  textMuted: '#4d5f7a',
+};
+
 export const styles: Record<string, CSSProperties> = {
-  // Contenedor mayor de todo el panel lateral derecho
   container: {
-    padding: '12px',
-    color: '#e2e8f0',
+    padding: '14px 12px',
+    color: COLOR.textPrimary,
     fontSize: '13px',
     height: '100%',
     overflowY: 'auto',
-    background: '#1a1f2e',
+    background: COLOR.bg,
+    fontFamily: 'system-ui, -apple-system, sans-serif',
   },
-  
-  // Encabezado superior
+
+  // ── Header ────────────────────────────────────────────────────────────────
   header: {
     display: 'flex',
     alignItems: 'center',
     gap: '8px',
-    marginBottom: '16px',
-    paddingBottom: '8px',
-    borderBottom: '1px solid #2d3748',
+    marginBottom: '18px',
+    paddingBottom: '12px',
+    borderBottom: `1px solid ${COLOR.border}`,
   },
-  headerIcon: { fontSize: '18px' },
-  headerTitle: { fontWeight: 700, fontSize: '15px', color: '#fff' },
-  
-  // Reglas estructurales para módulos de separación vertical
-  section: { marginBottom: '16px' },
+  headerIcon: { fontSize: '16px' },
+  headerTitle: { fontWeight: 700, fontSize: '14px', color: COLOR.textPrimary, letterSpacing: '-0.01em' },
+
+  // ── Layout ────────────────────────────────────────────────────────────────
+  section: { marginBottom: '18px' },
   sectionTitle: {
     fontWeight: 600,
-    fontSize: '12px',
+    fontSize: '10px',
     textTransform: 'uppercase',
-    letterSpacing: '0.05em',
-    color: '#90cdf4',
-    marginBottom: '8px',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    letterSpacing: '0.08em',
+    color: COLOR.textMuted,
+    marginBottom: '10px',
   },
-  label: { display: 'block', marginBottom: '4px', fontSize: '12px', color: '#a0aec0' },
-  
-  // Controles de formulario
+  label: { display: 'block', marginBottom: '5px', fontSize: '11px', color: COLOR.textSecondary },
+
+  // ── Selector de plantilla ─────────────────────────────────────────────────
   select: {
     width: '100%',
-    padding: '6px 8px',
-    background: '#2d3748',
-    color: '#e2e8f0',
-    border: '1px solid #4a5568',
-    borderRadius: '6px',
+    padding: '8px 10px',
+    background: COLOR.card,
+    color: COLOR.textPrimary,
+    border: `1px solid ${COLOR.border}`,
+    borderRadius: '8px',
     fontSize: '13px',
+    outline: 'none',
+    cursor: 'pointer',
   },
-  
-  // Botonería Primaria ("Call to Actions" fuertes)
+
+  // ── Botón primario (dictar completo) ──────────────────────────────────────
   primaryBtn: {
     width: '100%',
     padding: '10px',
-    background: '#3182ce',
-    color: '#fff',
-    border: 'none',
+    background: COLOR.accentDim,
+    color: COLOR.accent,
+    border: `1px solid ${COLOR.accent}`,
     borderRadius: '8px',
     cursor: 'pointer',
     fontWeight: 600,
     fontSize: '13px',
+    letterSpacing: '0.01em',
   },
-  recordingBtn: { background: '#e53e3e', animation: 'pulse 1s infinite' },
-  
-  // Botonería Secundaria
+  recordingBtn: {
+    background: '#3d1515',
+    color: COLOR.error,
+    border: `1px solid ${COLOR.error}`,
+  },
+
+  // ── Card de órgano ────────────────────────────────────────────────────────
+  organRow: {
+    marginBottom: '8px',
+    background: COLOR.card,
+    borderRadius: '8px',
+    padding: '10px',
+    borderLeft: `3px solid ${COLOR.border}`,
+  },
+  organRowFilled: {
+    borderLeft: `3px solid ${COLOR.success}`,
+  },
+  organHeader: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: '7px',
+  },
+  organName: { fontWeight: 600, color: COLOR.textPrimary, fontSize: '13px' },
+  micBtn: {
+    background: 'transparent',
+    border: `1px solid ${COLOR.border}`,
+    borderRadius: '6px',
+    cursor: 'pointer',
+    fontSize: '14px',
+    padding: '3px 8px',
+    color: COLOR.textSecondary,
+    lineHeight: 1,
+  },
+  micBtnActive: {
+    background: '#3d1515',
+    border: `1px solid ${COLOR.error}`,
+    color: COLOR.error,
+  },
+  organTextarea: {
+    width: '100%',
+    padding: '6px 8px',
+    background: COLOR.surface,
+    color: COLOR.textPrimary,
+    border: `1px solid ${COLOR.border}`,
+    borderRadius: '6px',
+    fontSize: '12px',
+    lineHeight: 1.5,
+    resize: 'vertical',
+    fontFamily: 'inherit',
+    boxSizing: 'border-box',
+    outline: 'none',
+  },
+
+  // ── Card de conclusiones ──────────────────────────────────────────────────
+  conclusionRow: {
+    background: COLOR.card,
+    borderRadius: '8px',
+    padding: '10px',
+    borderLeft: `3px solid ${COLOR.conclusion}`,
+  },
+  conclusionHeader: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: '7px',
+  },
+  conclusionLabel: { fontWeight: 600, color: COLOR.conclusion, fontSize: '13px' },
+  conclusionTextarea: {
+    width: '100%',
+    padding: '6px 8px',
+    background: COLOR.surface,
+    color: COLOR.textPrimary,
+    border: `1px solid ${COLOR.border}`,
+    borderRadius: '6px',
+    fontSize: '12px',
+    lineHeight: 1.5,
+    resize: 'vertical',
+    fontFamily: 'inherit',
+    boxSizing: 'border-box',
+    outline: 'none',
+  },
+
+  // ── Feedback ──────────────────────────────────────────────────────────────
+  errorBanner: {
+    background: COLOR.errorBg,
+    color: COLOR.error,
+    padding: '8px 12px',
+    borderRadius: '6px',
+    marginBottom: '14px',
+    fontSize: '12px',
+    borderLeft: `3px solid ${COLOR.error}`,
+  },
+  errorText: { color: COLOR.error, fontSize: '11px', margin: '4px 0 0' },
+  info: { color: COLOR.textMuted, fontSize: '12px', textAlign: 'center', padding: '24px 0' },
+
+  // ── Sticky footer con botón PDF ───────────────────────────────────────────
+  pdfSection: {
+    position: 'sticky' as const,
+    bottom: 0,
+    background: COLOR.bg,
+    paddingTop: '12px',
+    paddingBottom: '8px',
+    borderTop: `1px solid ${COLOR.border}`,
+    marginTop: '8px',
+  },
+  pdfBtn: {
+    width: '100%',
+    padding: '11px',
+    background: 'linear-gradient(135deg, #5b21b6, #be185d)',
+    color: '#fff',
+    border: 'none',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    fontWeight: 700,
+    fontSize: '13px',
+    letterSpacing: '0.01em',
+  },
+
+  // ── Misc ──────────────────────────────────────────────────────────────────
   secondaryBtn: {
     width: '100%',
     padding: '8px',
-    background: '#2d3748',
-    color: '#90cdf4',
-    border: '1px solid #4a5568',
+    background: COLOR.card,
+    color: COLOR.accent,
+    border: `1px solid ${COLOR.border}`,
     borderRadius: '8px',
     cursor: 'pointer',
     fontSize: '13px',
@@ -83,101 +218,25 @@ export const styles: Record<string, CSSProperties> = {
   copyBtn: {
     fontSize: '11px',
     padding: '2px 8px',
-    background: '#2d3748',
-    color: '#a0aec0',
-    border: '1px solid #4a5568',
+    background: COLOR.card,
+    color: COLOR.textMuted,
+    border: `1px solid ${COLOR.border}`,
     borderRadius: '4px',
     cursor: 'pointer',
   },
-  
-  // Cartas individuales de Órganos editables
-  organRow: {
-    marginBottom: '10px',
-    background: '#2d3748',
-    borderRadius: '8px',
-    padding: '8px',
-  },
-  organHeader: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: '4px',
-  },
-  organName: { fontWeight: 600, color: '#e2e8f0', fontSize: '13px' },
-  micBtn: {
-    background: 'transparent',
-    border: '1px solid #4a5568',
-    borderRadius: '6px',
-    cursor: 'pointer',
-    fontSize: '16px',
-    padding: '2px 6px',
-    color: '#e2e8f0',
-  },
-  micBtnActive: { background: '#e53e3e', border: '1px solid #e53e3e' },
-  organTextarea: {
-    width: '100%',
-    padding: '6px',
-    background: '#1a202c',
-    color: '#e2e8f0',
-    border: '1px solid #4a5568',
-    borderRadius: '6px',
-    fontSize: '12px',
-    resize: 'vertical',
-    fontFamily: 'inherit',
-    boxSizing: 'border-box',
-  },
-  
-  // Contenedores del reporte ya generado visualmente
   reportSection: {
-    marginBottom: '12px',
-    background: '#2d3748',
+    marginBottom: '10px',
+    background: COLOR.card,
     borderRadius: '8px',
     padding: '10px',
   },
   reportSectionTitle: {
     fontWeight: 700,
-    fontSize: '11px',
+    fontSize: '10px',
     textTransform: 'uppercase',
-    color: '#90cdf4',
+    color: COLOR.accent,
     marginBottom: '6px',
+    letterSpacing: '0.06em',
   },
-  reportContent: {
-    fontSize: '12px',
-    lineHeight: 1.6,
-    color: '#e2e8f0',
-  },
-  
-  // Feedback y mensajes de Estado del sistema
-  errorBanner: {
-    background: '#742a2a',
-    color: '#fc8181',
-    padding: '8px 12px',
-    borderRadius: '6px',
-    marginBottom: '12px',
-    fontSize: '12px',
-  },
-  errorText: { color: '#fc8181', fontSize: '11px', margin: '4px 0 0' },
-  info: { color: '#a0aec0', fontSize: '12px', textAlign: 'center', padding: '20px 0' },
-  
-  // Generador bloqueado y flotante pegado en el borde inferior
-  pdfSection: {
-    position: 'sticky' as const,
-    bottom: 0,
-    background: '#1a1f2e',
-    paddingTop: '12px',
-    paddingBottom: '8px',
-    borderTop: '1px solid #2d3748',
-    marginTop: '8px',
-  },
-  pdfBtn: {
-    width: '100%',
-    padding: '12px',
-    background: 'linear-gradient(135deg, #6830B8, #C43A88)',
-    color: '#fff',
-    border: 'none',
-    borderRadius: '8px',
-    cursor: 'pointer',
-    fontWeight: 700,
-    fontSize: '14px',
-  },
+  reportContent: { fontSize: '12px', lineHeight: 1.6, color: COLOR.textPrimary },
 };
