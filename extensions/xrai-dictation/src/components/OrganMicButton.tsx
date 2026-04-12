@@ -21,12 +21,20 @@ export function OrganMicButton({
   apiUrl: string;
   apiKey: string;
 }) {
-  // Estado local para gobernar solo este botón, sin recargar toda la plantilla entera.
   const [state, setState] = useState<RecordingState>('idle');
   const [error, setError] = useState('');
+  const textareaRef = React.useRef<HTMLTextAreaElement>(null);
 
   // Utiliza un grabador de forma aislada
   const { start, stop } = useAudioRecorder();
+
+  // Ajustar altura automáticamente cuando cambia el contenido
+  React.useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    }
+  }, [value]);
 
   /**
    * Administra la lógica iterativa de "Grabar" -> "Cortar y procesar" -> "Devolver texto"
@@ -73,9 +81,10 @@ export function OrganMicButton({
 
       {/* Caja de texto manual de los hallazgos */}
       <textarea
+        ref={textareaRef}
         value={value}
         onChange={e => onChange(e.target.value)}
-        style={styles.organTextarea}
+        style={{ ...styles.organTextarea, overflow: 'hidden' }}
         placeholder={
           // Damos una pista al usuario sobre qué palabras claves activan al órgano
           organ.keywords.length > 0

@@ -18,7 +18,7 @@ function getPanelModule() {
       name: 'xraiDictation',
       iconName: 'tab-patient-info',
       iconLabel: 'XRAI',
-      label: 'XRAI Dictado',
+      label: 'Creación Informe',
       component: () => <PanelDictation />,
     },
   ];

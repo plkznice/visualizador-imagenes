@@ -4,6 +4,7 @@ import { useSystem, utils } from '@ohif/core';
 import { useNavigate } from 'react-router-dom';
 import { useViewportGrid, StudyBrowser, Separator } from '@ohif/ui-next';
 import { PanelStudyBrowserHeader } from './PanelStudyBrowserHeader';
+import HeaderPatientInfo from '../../ViewerLayout/HeaderPatientInfo';
 import { defaultActionIcons } from './constants';
 import MoreDropdownMenu from '../../Components/MoreDropdownMenu';
 import { CallbackCustomization } from 'platform/core/src/types';
@@ -414,6 +415,12 @@ function PanelStudyBrowser({
           thickness="2px"
         />
       </>
+      <div style={{ backgroundColor: '#090c29', paddingBottom: '4px', borderBottom: '1px solid #1a1e4a', minHeight: '44px', display: 'flex', alignItems: 'center' }}>
+        <HeaderPatientInfo
+          servicesManager={servicesManager}
+          appConfig={extensionManager?.appConfig || { showPatientInfo: 'visible' }}
+        />
+      </div>
 
       <StudyBrowser
         tabs={tabs}

@@ -43,8 +43,8 @@ export const styles: Record<string, CSSProperties> = {
     paddingBottom: '12px',
     borderBottom: `1px solid ${COLOR.border}`,
   },
-  headerIcon: { fontSize: '16px' },
-  headerTitle: { fontWeight: 700, fontSize: '14px', color: COLOR.textPrimary, letterSpacing: '-0.01em' },
+  headerIcon: { fontSize: '22px' },
+  headerTitle: { fontWeight: 700, fontSize: '18px', color: COLOR.textPrimary, letterSpacing: '-0.01em' },
 
   // ── Layout ────────────────────────────────────────────────────────────────
   section: { marginBottom: '18px' },

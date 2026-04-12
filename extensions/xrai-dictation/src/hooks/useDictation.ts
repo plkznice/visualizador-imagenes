@@ -64,6 +64,20 @@ export function useDictation() {
       .filter(Boolean)
       .join('');
 
+  // Construye el GeneratedSections a partir de los textos ingresados por órgano
+  const buildReportFromOrgans = (): GeneratedSections => {
+    if (!selectedTemplate) return {};
+    const generated: GeneratedSections = {};
+    for (const s of selectedTemplate.sections) {
+      if (s.aiRole === 'fill_from_dictation') {
+        generated[s.key] = buildHallazgosHtml();
+      } else if (s.aiRole === 'use_default' || s.aiRole === 'manual') {
+        generated[s.key] = s.defaultValue;
+      }
+    }
+    return generated;
+  };
+
   const handleTemplateChange = (id: string) => {
     setSelectedId(id);
     setOrganTexts({});
@@ -104,37 +118,12 @@ export function useDictation() {
     }
   };
 
-  const handleGenerateFromOrgans = () => {
-    if (!selectedTemplate) return;
-    const generated: GeneratedSections = {};
-    for (const s of selectedTemplate.sections) {
-      if (s.aiRole === 'fill_from_dictation') {
-        generated[s.key] = buildHallazgosHtml();
-      } else if (s.aiRole === 'use_default' || s.aiRole === 'manual') {
-        generated[s.key] = s.defaultValue;
-      }
-    }
-    setReport(generated);
-  };
-
   const handleGeneratePdf = async () => {
     if (!selectedTemplate) return;
     setGeneratingPdf(true);
 
     try {
-      const activeReport: GeneratedSections =
-        report ??
-        (() => {
-          const generated: GeneratedSections = {};
-          for (const s of selectedTemplate.sections) {
-            if (s.aiRole === 'fill_from_dictation') {
-              generated[s.key] = buildHallazgosHtml();
-            } else if (s.aiRole === 'use_default' || s.aiRole === 'manual') {
-              generated[s.key] = s.defaultValue;
-            }
-          }
-          return generated;
-        })();
+      const activeReport: GeneratedSections = report ?? buildReportFromOrgans();
 
       const htmlContent = selectedTemplate.sections
         .map(s => {
@@ -165,23 +154,6 @@ export function useDictation() {
     }
   };
 
-  const copyReport = () => {
-    if (!report || !selectedTemplate) return;
-    const lines = selectedTemplate.sections.flatMap(s => {
-      const html = report[s.key];
-      if (!html) return [];
-      const txt = html
-        .replace(/<[^>]+>/g, ' ')
-        .replace(/\s+/g, ' ')
-        .trim();
-      return [s.label.toUpperCase(), txt, ''];
-    });
-    if (conclusion.trim()) {
-      lines.push('CONCLUSIÓN', conclusion.trim(), '');
-    }
-    navigator.clipboard.writeText(lines.join('\n'));
-  };
-
   return {
     cfg,
     templates,
@@ -190,7 +162,6 @@ export function useDictation() {
     error,
     organTexts,
     conclusion,
-    report,
     fullRecState,
     generatingPdf,
     selectedTemplate,
@@ -199,8 +170,6 @@ export function useDictation() {
     handleOrganChange,
     handleConclusionChange,
     handleFullDictation,
-    handleGenerateFromOrgans,
     handleGeneratePdf,
-    copyReport,
   };
 }
