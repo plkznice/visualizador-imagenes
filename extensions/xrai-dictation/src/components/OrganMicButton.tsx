@@ -9,9 +9,9 @@ import { dictateOrgan } from '../services/dictationApi';
 import { styles } from '../styles/PanelDictation.styles';
 
 export function OrganMicButton({
-  organ,      // Datos básicos del órgano y sus keywords esperadas
-  value,      // Texto consolidado dictado o modificado a mano
-  onChange,   // Callback para notificar al padre sobre cambios en el valor de texto
+  organ, // Datos básicos del órgano y sus keywords esperadas
+  value, // Texto consolidado dictado o modificado a mano
+  onChange, // Callback para notificar al padre sobre cambios en el valor de texto
   apiUrl,
   apiKey,
 }: {
@@ -24,7 +24,7 @@ export function OrganMicButton({
   // Estado local para gobernar solo este botón, sin recargar toda la plantilla entera.
   const [state, setState] = useState<RecordingState>('idle');
   const [error, setError] = useState('');
-  
+
   // Utiliza un grabador de forma aislada
   const { start, stop } = useAudioRecorder();
 
@@ -39,7 +39,7 @@ export function OrganMicButton({
     } else if (state === 'recording') {
       setState('processing');
       const audio = await stop();
-      
+
       try {
         const result = await dictateOrgan(apiUrl, apiKey, organ.name, organ.keywords, audio);
         onChange(result.text);
@@ -52,10 +52,10 @@ export function OrganMicButton({
   };
 
   return (
-    <div style={styles.organRow}>
+    <div style={{ ...styles.organRow, ...(value.trim() ? styles.organRowFilled : {}) }}>
       <div style={styles.organHeader}>
         <span style={styles.organName}>{organ.name}</span>
-        
+
         {/* Botón de micrófono interactivo */}
         <button
           onClick={handleClick}
@@ -74,12 +74,12 @@ export function OrganMicButton({
       {/* Caja de texto manual de los hallazgos */}
       <textarea
         value={value}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={e => onChange(e.target.value)}
         style={styles.organTextarea}
         placeholder={
           // Damos una pista al usuario sobre qué palabras claves activan al órgano
           organ.keywords.length > 0
-            ? organ.keywords.map((kw) => kw.keyword).join(' · ')
+            ? organ.keywords.map(kw => kw.keyword).join(' · ')
             : `Hallazgo de ${organ.name}...`
         }
         rows={2}

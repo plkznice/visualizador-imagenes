@@ -7,7 +7,11 @@ import { Template, TemplateSection, GeneratedSections, OrganKeyword } from '../t
 /**
  * Obtiene la lista de plantillas disponibles para una clínica específica.
  */
-export async function fetchTemplates(apiUrl: string, apiKey: string, clinicId: string): Promise<Template[]> {
+export async function fetchTemplates(
+  apiUrl: string,
+  apiKey: string,
+  clinicId: string
+): Promise<Template[]> {
   const res = await fetch(`${apiUrl}/api/ext/templates?clinicId=${clinicId}`, {
     headers: { 'x-api-key': apiKey },
   });
@@ -30,7 +34,7 @@ export async function dictateOrgan(
   fd.append('organName', organName);
   fd.append('keywords', JSON.stringify(keywords));
   fd.append('audio', new File([audio], 'audio.webm', { type: audio.type }));
-  
+
   const res = await fetch(`${apiUrl}/api/ext/dictation`, {
     method: 'POST',
     headers: { 'x-api-key': apiKey },
@@ -44,7 +48,7 @@ export async function dictateOrgan(
 }
 
 /**
- * Envía la grabación completa para todo el informe, 
+ * Envía la grabación completa para todo el informe,
  * encargando a la IA que distribuya el texto en las diferentes secciones y órganos.
  */
 export async function dictateFull(
@@ -52,11 +56,15 @@ export async function dictateFull(
   apiKey: string,
   sections: TemplateSection[],
   audio: Blob
-): Promise<{ generatedSections: GeneratedSections; organFindings: Record<string, string>; transcript: string }> {
+): Promise<{
+  generatedSections: GeneratedSections;
+  organFindings: Record<string, string>;
+  transcript: string;
+}> {
   const fd = new FormData();
   fd.append('sections', JSON.stringify(sections));
   fd.append('audio', new File([audio], 'audio.webm', { type: audio.type }));
-  
+
   const res = await fetch(`${apiUrl}/api/ext/dictation`, {
     method: 'POST',
     headers: { 'x-api-key': apiKey },
