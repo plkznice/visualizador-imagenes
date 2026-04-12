@@ -7,6 +7,7 @@ window.config = {
   extensions: [],
   modes: [],
   customizationService: {},
+  investigationalUseDialog: { option: 'never' },
   showStudyList: true,
   // some windows systems have issues with more than 3 web workers
   maxNumberOfWebWorkers: 3,
@@ -271,7 +272,7 @@ window.config = {
   ],
   httpErrorHandler: error => {
     // This is 429 when rejected from the public idc sandbox too often.
-    console.warn(error.status);
+    console.warn(error['status']);
 
     // Could use services manager here to bring up a dialog/modal if needed.
     console.warn('test, navigate to https://ohif.org/');
