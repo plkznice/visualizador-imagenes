@@ -3,6 +3,7 @@
  * Componente presentacional — toda la lógica vive en useDictation.
  */
 import React from 'react';
+import { Mic, Square, Loader2, FileText } from 'lucide-react';
 import { useDictation } from '../hooks/useDictation';
 import { OrganMicButton } from './OrganMicButton';
 import { styles } from '../styles/PanelDictation.styles';
@@ -165,10 +166,14 @@ export default function PanelDictation() {
               disabled={generatingPdf || !hasContent}
               style={{
                 ...styles.pdfBtn,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px',
                 ...(!hasContent ? { opacity: 0.4, cursor: 'not-allowed' } : {}),
               }}
             >
-              {generatingPdf ? '⏳  Generando PDF...' : '📄  Generar informe PDF'}
+              {generatingPdf ? <><Loader2 size={18} className="animate-spin" /> Generando PDF...</> : <><FileText size={18} /> Generar informe PDF</>}
             </button>
           </div>
         </>
@@ -186,12 +191,16 @@ export default function PanelDictation() {
             disabled={fullRecState === 'processing'}
             style={{
               ...styles.primaryBtn,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
               ...(fullRecState === 'recording' ? styles.recordingBtn : {}),
             }}
           >
-            {fullRecState === 'idle' && '🎤  Dictar informe completo'}
-            {fullRecState === 'recording' && '⏹  Detener dictado'}
-            {fullRecState === 'processing' && '⏳  Procesando...'}
+            {fullRecState === 'idle' && <><Mic size={18} /> Dictar informe completo</>}
+            {fullRecState === 'recording' && <><Square size={16} fill="currentColor" /> Detener dictado</>}
+            {fullRecState === 'processing' && <><Loader2 size={18} className="animate-spin" /> Procesando...</>}
           </button>
         </div>
       )}

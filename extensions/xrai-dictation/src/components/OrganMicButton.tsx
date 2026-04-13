@@ -3,6 +3,7 @@
  * propio botón de micrófono y un área de texto para editar los hallazgos locales.
  */
 import React, { useState } from 'react';
+import { Mic, Square, Loader2 } from 'lucide-react';
 import { OrganPreset, RecordingState } from '../types/dictation';
 import { useAudioRecorder } from '../hooks/useAudioRecorder';
 import { dictateOrgan } from '../services/dictationApi';
@@ -70,12 +71,15 @@ export function OrganMicButton({
           disabled={state === 'processing'}
           style={{
             ...styles.micBtn,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
             // Aplicamos un color rojo de advertencia si está grabando
             ...(state === 'recording' ? styles.micBtnActive : {}),
           }}
           title={state === 'idle' ? 'Grabar' : state === 'recording' ? 'Detener' : 'Procesando...'}
         >
-          {state === 'processing' ? '⏳' : state === 'recording' ? '⏹' : '🎤'}
+          {state === 'processing' ? <Loader2 size={16} className="animate-spin" /> : state === 'recording' ? <Square size={14} fill="currentColor" /> : <Mic size={16} />}
         </button>
       </div>
 
