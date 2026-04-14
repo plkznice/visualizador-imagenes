@@ -1,4 +1,9 @@
 /** @type {AppTypes.Config} */
+const _isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+const _orthancBase = _isLocal
+  ? 'http://localhost:8043'
+  : 'https://orthanc.citologianomi.com.ar';
+
 window.config = {
   routerBasename: '/',
   showStudyList: true,
@@ -28,9 +33,9 @@ window.config = {
       configuration: {
         friendlyName: 'Bio Imagenes Orthanc',
         name: 'Orthanc',
-        wadoUriRoot: 'https://respectively-nations-away-sleeve.trycloudflare.com/wado',
-        qidoRoot: 'https://respectively-nations-away-sleeve.trycloudflare.com/dicom-web',
-        wadoRoot: 'https://respectively-nations-away-sleeve.trycloudflare.com/dicom-web',
+        wadoUriRoot: `${_orthancBase}/wado`,
+        qidoRoot: `${_orthancBase}/dicom-web`,
+        wadoRoot: `${_orthancBase}/dicom-web`,
         qidoSupportsIncludeField: false,
         imageRendering: 'wadors',
         thumbnailRendering: 'wadors',
