@@ -21,7 +21,7 @@ window.config = {
     order: 'closest',
   },
   // Configuración XRAI — reemplazá con la URL real y tus credenciales
-  xraiApiUrl: 'http://localhost:3000',
+  xraiApiUrl: 'http://localhost:3001',
   xraiApiKey: 'xrai-ext-2026-bioimagenes',
   xraiClinicId: '4361ff84-7948-404b-b790-1939d6c1d571', // bioimagenes
 
@@ -41,6 +41,7 @@ window.config = {
         thumbnailRendering: 'wadors',
         dicomUploadEnabled: true,
         omitQuotationForMultipartRequest: true,
+        singlepart: 'bulkdata,video,pdf',
       },
     },
     {
