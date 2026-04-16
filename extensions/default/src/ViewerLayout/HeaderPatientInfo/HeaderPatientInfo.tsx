@@ -40,7 +40,7 @@ function HeaderPatientInfo({ servicesManager, appConfig }: withAppTypes<{ appCon
 
   return (
     <div
-      className="flex items-center justify-center gap-2 rounded-lg py-2 px-3"
+      className="flex items-start justify-center gap-2 rounded-lg py-2 px-3"
     >
       {isMixedPatients ? (
         <Icons.MultiplePatients className="text-primary" />
@@ -56,9 +56,8 @@ function HeaderPatientInfo({ servicesManager, appConfig }: withAppTypes<{ appCon
               {formattedPatientName}
             </div>
             <div className="text-muted-foreground flex flex-col gap-[2px] text-[12px] mt-[4px]">
-              <div>{formattedPatientID}</div>
-              <div>{patientInfo.PatientSex}</div>
-              <div>{patientInfo.PatientDOB}</div>
+              {formattedPatientID && <div>{formattedPatientID}</div>}
+              {patientInfo.PatientAge !== null && <div>{patientInfo.PatientAge} años</div>}
             </div>
           </>
         )}

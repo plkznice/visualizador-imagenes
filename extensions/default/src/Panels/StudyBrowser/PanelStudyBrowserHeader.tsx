@@ -2,7 +2,6 @@ import React from 'react';
 import { ToggleGroup, ToggleGroupItem } from '@ohif/ui-next';
 import { Icons } from '@ohif/ui-next';
 import { actionIcon, viewPreset } from './types';
-
 function PanelStudyBrowserHeader({
   viewPresets,
   updateViewPresetValue,
