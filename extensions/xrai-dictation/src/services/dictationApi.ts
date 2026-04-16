@@ -78,6 +78,26 @@ export async function dictateFull(
 }
 
 /**
+ * Consulta si ya existe un informe guardado para el estudio indicado.
+ */
+export async function checkReportExists(
+  apiUrl: string,
+  apiKey: string,
+  studyInstanceUID: string,
+  clinicId?: string
+): Promise<boolean> {
+  const params = new URLSearchParams({ studyInstanceUID });
+  if (clinicId) params.set('clinicId', clinicId);
+
+  const res = await fetch(`${apiUrl}/api/ext/report-exists?${params}`, {
+    headers: { 'x-api-key': apiKey },
+  });
+  if (!res.ok) return false;
+  const data = await res.json() as { exists: boolean };
+  return data.exists === true;
+}
+
+/**
  * Envía los datos del informe al servidor para que genere el PDF y lo guarde
  * como DICOM Encapsulated PDF en Orthanc. El PDF se genera server-side.
  */
