@@ -78,6 +78,40 @@ export async function dictateFull(
 }
 
 /**
+ * Envía los datos del informe al servidor para que genere el PDF y lo guarde
+ * como DICOM Encapsulated PDF en Orthanc. El PDF se genera server-side.
+ */
+export async function saveReportToServer(
+  apiUrl: string,
+  apiKey: string,
+  params: {
+    studyInstanceUID: string
+    clinicId: string
+    studyName: string
+    htmlContent: string
+    conclusion: string
+  }
+): Promise<void> {
+  const fd = new FormData()
+  fd.append('studyInstanceUID', params.studyInstanceUID)
+  fd.append('clinicId', params.clinicId)
+  fd.append('studyName', params.studyName)
+  fd.append('htmlContent', params.htmlContent)
+  fd.append('conclusion', params.conclusion)
+
+  const res = await fetch(`${apiUrl}/api/ext/save-report`, {
+    method: 'POST',
+    headers: { 'x-api-key': apiKey },
+    body: fd,
+  })
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}))
+    throw new Error((err as { error?: string }).error ?? 'Error guardando el informe')
+  }
+}
+
+/**
  * Envía el contenido HTML estructurado del reporte para que la API
  * lo convierta en un archivo PDF descargable.
  */

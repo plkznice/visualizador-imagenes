@@ -5,7 +5,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { getXraiConfig } from '../XraiConfig';
 import { Template, OrganPreset, GeneratedSections, RecordingState } from '../types/dictation';
-import { fetchTemplates, dictateFull, generatePdfReport } from '../services/dictationApi';
+import { fetchTemplates, dictateFull, generatePdfReport, saveReportToServer, dictateOrgan } from '../services/dictationApi';
 import { useAudioRecorder } from './useAudioRecorder';
 
 export function useDictation() {
@@ -21,9 +21,15 @@ export function useDictation() {
   const [report, setReport] = useState<GeneratedSections | null>(null);
 
   const [fullRecState, setFullRecState] = useState<RecordingState>('idle');
+  const [conclusionRecState, setConclusionRecState] = useState<RecordingState>('idle');
+  const [conclusionAppendState, setConclusionAppendState] = useState<RecordingState>('idle');
   const [generatingPdf, setGeneratingPdf] = useState(false);
+  const [savingReport, setSavingReport] = useState(false);
+  const [reportSaved, setReportSaved] = useState(false);
 
   const { start, stop } = useAudioRecorder();
+  const { start: startConcRec, stop: stopConcRec } = useAudioRecorder();
+  const { start: startConcAppend, stop: stopConcAppend } = useAudioRecorder();
 
   useEffect(() => {
     if (!cfg.apiUrl || !cfg.apiKey || !cfg.clinicId) {
@@ -118,6 +124,44 @@ export function useDictation() {
     }
   };
 
+  const handleConclusionReplace = async () => {
+    if (conclusionRecState === 'idle') {
+      setError('');
+      setConclusionRecState('recording');
+      await startConcRec();
+    } else if (conclusionRecState === 'recording') {
+      setConclusionRecState('processing');
+      const audio = await stopConcRec();
+      try {
+        const result = await dictateOrgan(cfg.apiUrl, cfg.apiKey, 'Conclusión', [], audio);
+        setConclusion(result.text);
+      } catch (e: unknown) {
+        setError(e instanceof Error ? e.message : 'Error dictando conclusión');
+      } finally {
+        setConclusionRecState('idle');
+      }
+    }
+  };
+
+  const handleConclusionAppend = async () => {
+    if (conclusionAppendState === 'idle') {
+      setError('');
+      setConclusionAppendState('recording');
+      await startConcAppend();
+    } else if (conclusionAppendState === 'recording') {
+      setConclusionAppendState('processing');
+      const audio = await stopConcAppend();
+      try {
+        const result = await dictateOrgan(cfg.apiUrl, cfg.apiKey, 'Conclusión', [], audio);
+        setConclusion(prev => prev.trimEnd() + (prev.trim() ? ' ' : '') + result.text);
+      } catch (e: unknown) {
+        setError(e instanceof Error ? e.message : 'Error dictando conclusión');
+      } finally {
+        setConclusionAppendState('idle');
+      }
+    }
+  };
+
   const handleGeneratePdf = async () => {
     if (!selectedTemplate) return;
     setGeneratingPdf(true);
@@ -154,6 +198,42 @@ export function useDictation() {
     }
   };
 
+  const handleSaveReport = async (studyInstanceUID: string) => {
+    if (!selectedTemplate || !studyInstanceUID) return;
+    setSavingReport(true);
+    setReportSaved(false);
+    setError('');
+
+    try {
+      const activeReport: GeneratedSections = report ?? buildReportFromOrgans();
+
+      const htmlContent = selectedTemplate.sections
+        .map(s => {
+          const content = activeReport[s.key];
+          if (!content || s.key === 'CONCLUSION') return '';
+          return `<h2>${s.label}</h2>${content}`;
+        })
+        .filter(Boolean)
+        .join('');
+
+      const finalConclusion = conclusion.trim() || activeReport['CONCLUSION'] || '';
+
+      await saveReportToServer(cfg.apiUrl, cfg.apiKey, {
+        studyInstanceUID,
+        clinicId: cfg.clinicId,
+        studyName: selectedTemplate.name,
+        htmlContent,
+        conclusion: finalConclusion,
+      });
+
+      setReportSaved(true);
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : 'Error guardando el informe');
+    } finally {
+      setSavingReport(false);
+    }
+  };
+
   return {
     cfg,
     templates,
@@ -164,12 +244,19 @@ export function useDictation() {
     conclusion,
     fullRecState,
     generatingPdf,
+    savingReport,
+    reportSaved,
     selectedTemplate,
     allOrgans,
     handleTemplateChange,
     handleOrganChange,
     handleConclusionChange,
     handleFullDictation,
+    handleConclusionReplace,
+    handleConclusionAppend,
+    conclusionRecState,
+    conclusionAppendState,
     handleGeneratePdf,
+    handleSaveReport,
   };
 }

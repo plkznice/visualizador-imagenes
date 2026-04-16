@@ -3,7 +3,7 @@
  * Componente presentacional — toda la lógica vive en useDictation.
  */
 import React from 'react';
-import { Mic, Square, Loader2, FileText } from 'lucide-react';
+import { Mic, Square, Loader2, FileText, Plus, Save, CheckCircle } from 'lucide-react';
 import { useDictation } from '../hooks/useDictation';
 import { OrganMicButton } from './OrganMicButton';
 import { styles } from '../styles/PanelDictation.styles';
@@ -23,20 +23,27 @@ export default function PanelDictation() {
     conclusion,
     fullRecState,
     generatingPdf,
+    savingReport,
+    reportSaved,
     selectedTemplate,
     allOrgans,
     handleTemplateChange,
     handleOrganChange,
     handleConclusionChange,
     handleFullDictation,
+    handleConclusionReplace,
+    handleConclusionAppend,
+    conclusionRecState,
+    conclusionAppendState,
     handleGeneratePdf,
+    handleSaveReport,
   } = useDictation();
 
   const hasContent =
     Object.values(organTexts).some(v => v.trim().length > 0) || conclusion.trim().length > 0;
 
   const conclusionRef = React.useRef<HTMLTextAreaElement>(null);
-  const [patientInfo, setPatientInfo] = React.useState<{ name: string; dob: string; study: string } | null>(null);
+  const [patientInfo, setPatientInfo] = React.useState<{ name: string; dob: string; study: string; studyInstanceUID: string } | null>(null);
 
   React.useEffect(() => {
     if (conclusionRef.current) {
@@ -56,9 +63,10 @@ export default function PanelDictation() {
         const name = instance.PatientName ? utils.formatPN(instance.PatientName) : '';
         const dob = instance.PatientBirthDate ? utils.formatDate(instance.PatientBirthDate) : '';
         const study = instance.StudyDescription || '';
-        
+        const studyInstanceUID = instance.StudyInstanceUID || '';
+
         if (name || dob || study) {
-          setPatientInfo({ name, dob, study });
+          setPatientInfo({ name, dob, study, studyInstanceUID });
           return true;
         }
       }
@@ -147,6 +155,40 @@ export default function PanelDictation() {
             <div style={styles.conclusionRow}>
               <div style={styles.conclusionHeader}>
                 <span style={styles.conclusionLabel}>Conclusión</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  {/* Mic reemplazar */}
+                  <button
+                    onClick={handleConclusionReplace}
+                    disabled={conclusionRecState === 'processing' || conclusionAppendState !== 'idle'}
+                    title="Dictar conclusión (reemplaza)"
+                    style={{
+                      ...styles.micBtn,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      opacity: conclusionAppendState !== 'idle' ? 0.4 : 1,
+                      ...(conclusionRecState === 'recording' ? styles.micBtnActive : {}),
+                    }}
+                  >
+                    {conclusionRecState === 'processing' ? <Loader2 size={16} className="animate-spin" /> : conclusionRecState === 'recording' ? <Square size={14} fill="currentColor" /> : <Mic size={16} />}
+                  </button>
+
+                  {/* Mic agregar */}
+                  <button
+                    onClick={handleConclusionAppend}
+                    disabled={conclusionAppendState === 'processing' || conclusionRecState !== 'idle'}
+                    title="Dictar y agregar a conclusión"
+                    style={{
+                      ...styles.micBtn,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      position: 'relative',
+                      opacity: conclusionRecState !== 'idle' ? 0.4 : 1,
+                      ...(conclusionAppendState === 'recording' ? styles.micBtnActive : {}),
+                    }}
+                  >
+                    {conclusionAppendState === 'processing' ? <Loader2 size={16} className="animate-spin" /> : conclusionAppendState === 'recording' ? <Square size={14} fill="currentColor" /> : (
+                      <><Mic size={14} /><Plus size={10} style={{ position: 'absolute', bottom: 2, right: 2 }} /></>
+                    )}
+                  </button>
+                </div>
               </div>
               <textarea
                 ref={conclusionRef}
@@ -159,8 +201,8 @@ export default function PanelDictation() {
             </div>
           </div>
 
-          {/* Botón generar informe PDF (movido debajo de la conclusión) */}
-          <div style={styles.section}>
+          {/* Botones de informe PDF */}
+          <div style={{ ...styles.section, display: 'flex', flexDirection: 'column', gap: '8px' }}>
             <button
               onClick={handleGeneratePdf}
               disabled={generatingPdf || !hasContent}
@@ -175,6 +217,27 @@ export default function PanelDictation() {
             >
               {generatingPdf ? <><Loader2 size={18} className="animate-spin" /> Generando PDF...</> : <><FileText size={18} /> Generar informe PDF</>}
             </button>
+
+            <button
+              onClick={() => handleSaveReport(patientInfo?.studyInstanceUID ?? '')}
+              disabled={savingReport || !hasContent || !patientInfo?.studyInstanceUID}
+              style={{
+                ...styles.pdfBtn,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px',
+                background: reportSaved ? '#16a34a' : '#1d4ed8',
+                ...((!hasContent || !patientInfo?.studyInstanceUID) ? { opacity: 0.4, cursor: 'not-allowed' } : {}),
+              }}
+            >
+              {savingReport
+                ? <><Loader2 size={18} className="animate-spin" /> Guardando...</>
+                : reportSaved
+                  ? <><CheckCircle size={18} /> Informe guardado</>
+                  : <><Save size={18} /> Guardar en servidor</>
+              }
+            </button>
           </div>
         </>
       )}
@@ -183,24 +246,42 @@ export default function PanelDictation() {
         <div style={styles.info}>No hay plantillas configuradas en XRAI.</div>
       )}
 
-      {/* Footer sticky con botón Dictar Completo (movido al pie) */}
+      {/* Footer sticky con botones Dictar / Detener */}
       {!loading && templates.length > 0 && (
-        <div style={styles.pdfSection}>
+        <div style={{ ...styles.pdfSection, display: 'flex', gap: '8px' }}>
           <button
             onClick={handleFullDictation}
-            disabled={fullRecState === 'processing'}
+            disabled={fullRecState !== 'idle'}
             style={{
               ...styles.primaryBtn,
+              flex: 1,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               gap: '8px',
-              ...(fullRecState === 'recording' ? styles.recordingBtn : {}),
+              opacity: fullRecState !== 'idle' ? 0.5 : 1,
             }}
           >
-            {fullRecState === 'idle' && <><Mic size={18} /> Dictar informe completo</>}
-            {fullRecState === 'recording' && <><Square size={16} fill="currentColor" /> Detener dictado</>}
-            {fullRecState === 'processing' && <><Loader2 size={18} className="animate-spin" /> Procesando...</>}
+            {fullRecState === 'processing'
+              ? <><Loader2 size={18} className="animate-spin" /> Procesando...</>
+              : <><Mic size={18} /> Dictar informe</>}
+          </button>
+
+          <button
+            onClick={handleFullDictation}
+            disabled={fullRecState !== 'recording'}
+            style={{
+              ...styles.primaryBtn,
+              flex: 1,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              background: fullRecState === 'recording' ? '#dc2626' : undefined,
+              opacity: fullRecState !== 'recording' ? 0.4 : 1,
+            }}
+          >
+            <Square size={16} fill="currentColor" /> Detener
           </button>
         </div>
       )}
