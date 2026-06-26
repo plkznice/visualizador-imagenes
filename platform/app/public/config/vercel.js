@@ -1,4 +1,6 @@
 /** @type {AppTypes.Config} */
+const _orthancBase = 'https://orthanc.citologianomi.com.ar';
+
 window.config = {
   routerBasename: '/',
   showStudyList: true,
@@ -28,14 +30,15 @@ window.config = {
       configuration: {
         friendlyName: 'Bio Imagenes Orthanc',
         name: 'Orthanc',
-        wadoUriRoot: 'https://orthanc.citologianomi.com.ar/wado',
-        qidoRoot: 'https://orthanc.citologianomi.com.ar/dicom-web',
-        wadoRoot: 'https://orthanc.citologianomi.com.ar/dicom-web',
+        wadoUriRoot: `${_orthancBase}/wado`,
+        qidoRoot: `${_orthancBase}/dicom-web`,
+        wadoRoot: `${_orthancBase}/dicom-web`,
         qidoSupportsIncludeField: false,
         imageRendering: 'wadors',
         thumbnailRendering: 'wadors',
         dicomUploadEnabled: true,
         omitQuotationForMultipartRequest: true,
+        singlepart: 'bulkdata,video,pdf',
       },
     },
     {
@@ -57,9 +60,9 @@ window.config = {
   whiteLabeling: {
     createLogoComponentFn: function (React) {
       return React.createElement('img', {
-        src: './bio_imagenes_white.png',
+        src: './visnova_SF.png',
         alt: 'Bio Imagenes Mendoza',
-        style: { height: '64px', width: 'auto' },
+        style: { height: '44px', width: 'auto' },
       });
     },
   },

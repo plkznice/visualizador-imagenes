@@ -35,11 +35,30 @@ function OHIFCornerstonePdfViewport({ displaySets, viewportId = 'pdf-viewport' }
   const { renderedUrl } = displaySets[0];
 
   useEffect(() => {
+    let objectUrl: string | null = null;
+
     const load = async () => {
-      setUrl(await renderedUrl);
+      const rawUrl = await renderedUrl;
+      if (!rawUrl) return;
+
+      try {
+        const response = await fetch(rawUrl, {
+          headers: { Accept: 'application/pdf' },
+        });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const blob = await response.blob();
+        objectUrl = URL.createObjectURL(new Blob([blob], { type: 'application/pdf' }));
+        setUrl(objectUrl);
+      } catch (e) {
+        console.error('PDF load failed:', e);
+      }
     };
 
     load();
+
+    return () => {
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+    };
   }, [renderedUrl]);
 
   return (
@@ -54,13 +73,16 @@ function OHIFCornerstonePdfViewport({ displaySets, viewportId = 'pdf-viewport' }
       }}
       data-viewport-id={viewportId}
     >
-      <object
-        data={url}
-        type="application/pdf"
-        className={style}
-      >
-        <div>No online PDF viewer installed</div>
-      </object>
+      {url ? (
+        <iframe
+          src={url}
+          className={style}
+          title="PDF Viewer"
+          style={{ border: 'none', width: '100%', height: '100%' }}
+        />
+      ) : (
+        <div className="flex h-full w-full items-center justify-center text-white">Cargando PDF...</div>
+      )}
     </div>
   );
 }

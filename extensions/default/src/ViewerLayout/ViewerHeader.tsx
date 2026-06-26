@@ -88,14 +88,7 @@ function ViewerHeader({ appConfig }: withAppTypes<{ appConfig: AppTypes.Config }
       onClickReturnButton={onClickReturnButton}
       WhiteLabeling={appConfig.whiteLabeling}
       Secondary={<Toolbar buttonSection="secondary" />}
-      PatientInfo={
-        appConfig.showPatientInfo !== PatientInfoVisibility.DISABLED && (
-          <HeaderPatientInfo
-            servicesManager={servicesManager}
-            appConfig={appConfig}
-          />
-        )
-      }
+      PatientInfo={null}
       UndoRedo={
         <div className="text-primary flex cursor-pointer items-center">
           <Button

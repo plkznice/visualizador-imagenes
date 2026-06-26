@@ -37,6 +37,21 @@ const getBulkdataValue = (config, params) => {
     return `${wadoRoot}/studies/${StudyInstanceUID}/${acceptUri}`;
   }
 
+  // If the BulkDataURI is absolute but its origin differs from the configured wadoRoot
+  // (e.g. Orthanc returns http://localhost without port when running on a non-standard port),
+  // rebase it onto the configured wadoRoot origin so the request reaches the right server.
+  if (acceptUri.startsWith('http') && config.wadoRoot) {
+    try {
+      const configOrigin = new URL(config.wadoRoot).origin;
+      const bulkOrigin = new URL(acceptUri).origin;
+      if (configOrigin !== bulkOrigin) {
+        return acceptUri.replace(bulkOrigin, configOrigin);
+      }
+    } catch (_) {
+      // malformed URL — fall through and return as-is
+    }
+  }
+
   // The DICOMweb standard states that the default is multipart related, and then
   // separately states that the accept parameter is the URL parameter equivalent of the accept header.
   return acceptUri;

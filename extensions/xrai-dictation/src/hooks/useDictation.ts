@@ -1,12 +1,14 @@
 /**
- * Hook orquestador principal que maneja todo el estado y lógica de negocio del panel de dictado.
- * Actúa como "cerebro", separando la lógica de manipulación de estado de la parte visual.
+ * Hook orquestador del panel de dictado.
+ * Coordina plantillas, textos de órganos, conclusión y acciones de informe.
+ * La lógica de grabación vive en useRecordingFlow, la de HTML en useReportBuilder.
  */
 import { useState, useEffect, useMemo } from 'react';
 import { getXraiConfig } from '../XraiConfig';
-import { Template, OrganPreset, GeneratedSections, RecordingState } from '../types/dictation';
-import { fetchTemplates, dictateFull, generatePdfReport } from '../services/dictationApi';
-import { useAudioRecorder } from './useAudioRecorder';
+import { Template, OrganPreset, GeneratedSections } from '../types/dictation';
+import { fetchTemplates, dictateFull, generatePdfReport, saveReportToServer, dictateOrgan } from '../services/dictationApi';
+import { useRecordingFlow } from './useRecordingFlow';
+import { useReportBuilder } from './useReportBuilder';
 
 export function useDictation() {
   const cfg = useMemo(() => getXraiConfig(), []);
@@ -20,10 +22,9 @@ export function useDictation() {
   const [conclusion, setConclusion] = useState('');
   const [report, setReport] = useState<GeneratedSections | null>(null);
 
-  const [fullRecState, setFullRecState] = useState<RecordingState>('idle');
   const [generatingPdf, setGeneratingPdf] = useState(false);
-
-  const { start, stop } = useAudioRecorder();
+  const [savingReport, setSavingReport] = useState(false);
+  const [reportSaved, setReportSaved] = useState(false);
 
   useEffect(() => {
     if (!cfg.apiUrl || !cfg.apiKey || !cfg.clinicId) {
@@ -55,14 +56,40 @@ export function useDictation() {
     [selectedTemplate]
   );
 
-  const buildHallazgosHtml = () =>
-    allOrgans
-      .map(o => {
-        const t = organTexts[o.name];
-        return t ? `<h2>${o.name}</h2><p>${t}</p>` : '';
-      })
-      .filter(Boolean)
-      .join('');
+  const { buildReport, buildSectionsHtml, getFinalConclusion } = useReportBuilder(
+    selectedTemplate,
+    allOrgans,
+    organTexts,
+    conclusion
+  );
+
+  const fullDictation = useRecordingFlow({
+    onProcess: async (audio) => {
+      if (!selectedTemplate) throw new Error('No hay plantilla seleccionada');
+      return dictateFull(cfg.apiUrl, cfg.apiKey, selectedTemplate.sections, audio);
+    },
+    onSuccess: (result) => {
+      setReport(result.generatedSections);
+      if (result.organFindings) setOrganTexts(result.organFindings);
+      if (result.generatedSections?.['CONCLUSION']) {
+        setConclusion(result.generatedSections['CONCLUSION']);
+      }
+    },
+    onError: setError,
+  });
+
+  const conclusionReplace = useRecordingFlow({
+    onProcess: (audio) => dictateOrgan(cfg.apiUrl, cfg.apiKey, 'Conclusión', [], audio),
+    onSuccess: (result) => setConclusion(result.text),
+    onError: setError,
+  });
+
+  const conclusionAppend = useRecordingFlow({
+    onProcess: (audio) => dictateOrgan(cfg.apiUrl, cfg.apiKey, 'Conclusión', [], audio),
+    onSuccess: (result) =>
+      setConclusion(prev => prev.trimEnd() + (prev.trim() ? ' ' : '') + result.text),
+    onError: setError,
+  });
 
   const handleTemplateChange = (id: string) => {
     setSelectedId(id);
@@ -75,89 +102,19 @@ export function useDictation() {
     setOrganTexts(prev => ({ ...prev, [organName]: text }));
   };
 
-  const handleConclusionChange = (text: string) => setConclusion(text);
-
-  const handleFullDictation = async () => {
-    if (!selectedTemplate) return;
-
-    if (fullRecState === 'idle') {
-      setError('');
-      setFullRecState('recording');
-      await start();
-    } else if (fullRecState === 'recording') {
-      setFullRecState('processing');
-      const audio = await stop();
-
-      try {
-        const result = await dictateFull(cfg.apiUrl, cfg.apiKey, selectedTemplate.sections, audio);
-        setReport(result.generatedSections);
-        if (result.organFindings) setOrganTexts(result.organFindings);
-        // Si la IA generó conclusión, la volcamos al campo
-        if (result.generatedSections?.['CONCLUSION']) {
-          setConclusion(result.generatedSections['CONCLUSION']);
-        }
-      } catch (e: unknown) {
-        setError(e instanceof Error ? e.message : 'Error en dictado');
-      } finally {
-        setFullRecState('idle');
-      }
-    }
-  };
-
-  const handleGenerateFromOrgans = () => {
-    if (!selectedTemplate) return;
-    const generated: GeneratedSections = {};
-    for (const s of selectedTemplate.sections) {
-      if (s.aiRole === 'fill_from_dictation') {
-        generated[s.key] = buildHallazgosHtml();
-      } else if (s.aiRole === 'use_default' || s.aiRole === 'manual') {
-        generated[s.key] = s.defaultValue;
-      }
-    }
-    setReport(generated);
-  };
-
   const handleGeneratePdf = async () => {
     if (!selectedTemplate) return;
     setGeneratingPdf(true);
-
     try {
-      const activeReport: GeneratedSections =
-        report ??
-        (() => {
-          const generated: GeneratedSections = {};
-          for (const s of selectedTemplate.sections) {
-            if (s.aiRole === 'fill_from_dictation') {
-              generated[s.key] = buildHallazgosHtml();
-            } else if (s.aiRole === 'use_default' || s.aiRole === 'manual') {
-              generated[s.key] = s.defaultValue;
-            }
-          }
-          return generated;
-        })();
-
-      const htmlContent = selectedTemplate.sections
-        .map(s => {
-          const content = activeReport[s.key];
-          if (!content || s.key === 'CONCLUSION') return '';
-          return `<h2>${s.label}</h2>${content}`;
-        })
-        .filter(Boolean)
-        .join('');
-
-      // Prioridad: campo manual de conclusión > lo que generó la IA
-      const finalConclusion = conclusion.trim() || activeReport['CONCLUSION'] || '';
-
+      const activeReport = report ?? buildReport();
       const blob = await generatePdfReport(
         cfg.apiUrl,
         cfg.apiKey,
         selectedTemplate.name,
-        htmlContent,
-        finalConclusion
+        buildSectionsHtml(activeReport),
+        getFinalConclusion(activeReport)
       );
-
-      const url = URL.createObjectURL(blob);
-      window.open(url, '_blank');
+      window.open(URL.createObjectURL(blob), '_blank');
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : 'Error generando PDF');
     } finally {
@@ -165,21 +122,26 @@ export function useDictation() {
     }
   };
 
-  const copyReport = () => {
-    if (!report || !selectedTemplate) return;
-    const lines = selectedTemplate.sections.flatMap(s => {
-      const html = report[s.key];
-      if (!html) return [];
-      const txt = html
-        .replace(/<[^>]+>/g, ' ')
-        .replace(/\s+/g, ' ')
-        .trim();
-      return [s.label.toUpperCase(), txt, ''];
-    });
-    if (conclusion.trim()) {
-      lines.push('CONCLUSIÓN', conclusion.trim(), '');
+  const handleSaveReport = async (studyInstanceUID: string) => {
+    if (!selectedTemplate || !studyInstanceUID) return;
+    setSavingReport(true);
+    setReportSaved(false);
+    setError('');
+    try {
+      const activeReport = report ?? buildReport();
+      await saveReportToServer(cfg.apiUrl, cfg.apiKey, {
+        studyInstanceUID,
+        clinicId: cfg.clinicId,
+        studyName: selectedTemplate.name,
+        htmlContent: buildSectionsHtml(activeReport),
+        conclusion: getFinalConclusion(activeReport),
+      });
+      setReportSaved(true);
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : 'Error guardando el informe');
+    } finally {
+      setSavingReport(false);
     }
-    navigator.clipboard.writeText(lines.join('\n'));
   };
 
   return {
@@ -190,17 +152,21 @@ export function useDictation() {
     error,
     organTexts,
     conclusion,
-    report,
-    fullRecState,
+    fullRecState: fullDictation.state,
     generatingPdf,
+    savingReport,
+    reportSaved,
     selectedTemplate,
     allOrgans,
     handleTemplateChange,
     handleOrganChange,
-    handleConclusionChange,
-    handleFullDictation,
-    handleGenerateFromOrgans,
+    handleConclusionChange: setConclusion,
+    handleFullDictation: fullDictation.toggle,
+    conclusionReplaceState: conclusionReplace.state,
+    conclusionAppendState: conclusionAppend.state,
+    handleConclusionReplace: conclusionReplace.toggle,
+    handleConclusionAppend: conclusionAppend.toggle,
     handleGeneratePdf,
-    copyReport,
+    handleSaveReport,
   };
 }

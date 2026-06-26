@@ -28,7 +28,7 @@ export interface XraiConfig {
 export function getXraiConfig(): XraiConfig {
   const cfg = window.config ?? {};
   return {
-    apiUrl: cfg.xraiApiUrl ?? 'http://localhost:3001',
+    apiUrl: cfg.xraiApiUrl ?? 'http://localhost:3000',
     apiKey: cfg.xraiApiKey ?? '',
     clinicId: cfg.xraiClinicId ?? '',
   };

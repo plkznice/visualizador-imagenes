@@ -17,13 +17,9 @@ const ThumbnailList = ({
   const { ref, maxHeight } = useDynamicMaxHeight(thumbnails);
 
   // Filter thumbnails into list items and thumbnail items
-  const listItems = thumbnails?.filter(
-    ({ componentType }) => componentType === 'thumbnailNoImage' || viewPreset === 'list'
-  );
+  const listItems = thumbnails?.filter(() => viewPreset === 'list');
 
-  const thumbnailItems = thumbnails?.filter(
-    ({ componentType }) => componentType !== 'thumbnailNoImage' && viewPreset === 'thumbnails'
-  );
+  const thumbnailItems = thumbnails?.filter(() => viewPreset === 'thumbnails');
 
   return (
     <div className="flex flex-col">

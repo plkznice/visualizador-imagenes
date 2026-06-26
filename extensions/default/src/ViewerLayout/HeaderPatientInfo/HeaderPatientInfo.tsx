@@ -16,12 +16,12 @@ const formatWithEllipsis = (str, maxLength) => {
   return str;
 };
 
-function HeaderPatientInfo({ servicesManager, appConfig }: withAppTypes) {
+function HeaderPatientInfo({ servicesManager, appConfig }: withAppTypes<{ appConfig: AppTypes.Config }>) {
   const initialExpandedState =
     appConfig.showPatientInfo === PatientInfoVisibility.VISIBLE ||
     appConfig.showPatientInfo === PatientInfoVisibility.VISIBLE_READONLY;
   const [expanded, setExpanded] = useState(initialExpandedState);
-  const { patientInfo, isMixedPatients } = usePatientInfo(servicesManager);
+  const { patientInfo, isMixedPatients } = usePatientInfo();
 
   useEffect(() => {
     if (isMixedPatients && expanded) {
@@ -40,8 +40,7 @@ function HeaderPatientInfo({ servicesManager, appConfig }: withAppTypes) {
 
   return (
     <div
-      className="hover:bg-muted flex cursor-pointer items-center justify-center gap-1 rounded-lg"
-      onClick={handleOnClick}
+      className="flex items-start justify-center gap-2 rounded-lg py-2 px-3"
     >
       {isMixedPatients ? (
         <Icons.MultiplePatients className="text-primary" />
@@ -49,24 +48,20 @@ function HeaderPatientInfo({ servicesManager, appConfig }: withAppTypes) {
         <Icons.Patient className="text-primary" />
       )}
       <div className="flex flex-col justify-center">
-        {expanded ? (
+        {isMixedPatients && !expanded ? (
+          <div className="text-primary self-center text-[13px]">Multiple Patients</div>
+        ) : (
           <>
-            <div className="text-foreground self-start text-[13px] font-bold">
+            <div className="text-foreground self-start text-[14px] font-bold">
               {formattedPatientName}
             </div>
-            <div className="text-muted-foreground flex gap-2 text-[11px]">
-              <div>{formattedPatientID}</div>
-              <div>{patientInfo.PatientSex}</div>
-              <div>{patientInfo.PatientDOB}</div>
+            <div className="text-muted-foreground flex flex-col gap-[2px] text-[12px] mt-[4px]">
+              {formattedPatientID && <div>{formattedPatientID}</div>}
+              {patientInfo.PatientAge !== null && <div>{patientInfo.PatientAge} años</div>}
             </div>
           </>
-        ) : (
-          <div className="text-primary self-center text-[13px]">
-            {isMixedPatients ? 'Multiple Patients' : 'Patient'}
-          </div>
         )}
       </div>
-      <Icons.ArrowLeft className={`text-primary ${expanded ? 'rotate-180' : ''}`} />
     </div>
   );
 }

@@ -8,35 +8,35 @@
 
 @layer base {
   :root {
-    /* Bio Imágenes Mendoza - Premium Dark Theme */
-    --highlight: 35 80% 55%;           /* Amber/orange highlight */
-    --neutral: 260 10% 55%;            /* Muted violet-gray */
-    --neutral-light: 260 20% 75%;      /* Light violet-gray */
-    --neutral-dark: 260 12% 18%;       /* Dark violet-gray */
-    --background: 240 6% 10%;          /* Premium dark gray */
-    --foreground: 0 0% 96%;            /* Off-white text */
-    --card: 255 15% 13%;               /* Dark violet-tinted card */
-    --card-foreground: 0 0% 96%;
-    --popover: 255 18% 15%;            /* Violet-tinted popover */
-    --popover-foreground: 0 0% 96%;
-    --primary: 270 60% 55%;            /* Vibrant violet */
+    /* Bio Imágenes Mendoza — paleta XRAI (#0f1117 bg, #4f8ef7 accent, #f59e0b amber) */
+    --highlight: 25 96% 61%;           /* #f97316 naranja */
+    --neutral: 220 22% 61%;            /* #8896b0 texto secundario */
+    --neutral-light: 220 40% 93%;      /* #e8edf5 texto primario */
+    --neutral-dark: 225 28% 14%;       /* #1a1f2e surface */
+    --background: 228 21% 7%;          /* #0f1117 fondo principal */
+    --foreground: 220 40% 93%;         /* #e8edf5 */
+    --card: 218 28% 16%;               /* #1e2535 card */
+    --card-foreground: 220 40% 93%;
+    --popover: 225 28% 14%;            /* #1a1f2e surface */
+    --popover-foreground: 220 40% 93%;
+    --primary: 25 96% 61%;             /* #f97316 naranja */
     --primary-foreground: 0 0% 98%;
-    --secondary: 275 45% 35%;          /* Deep violet */
-    --secondary-foreground: 270 30% 85%;
-    --muted: 255 12% 14%;             /* Dark muted violet */
-    --muted-foreground: 260 15% 60%;   /* Soft violet-gray text */
-    --accent: 35 85% 50%;              /* Amber/yellow accent */
+    --secondary: 225 28% 14%;          /* #1a1f2e */
+    --secondary-foreground: 220 22% 61%;
+    --muted: 225 28% 14%;              /* #1a1f2e */
+    --muted-foreground: 220 22% 61%;   /* #8896b0 */
+    --accent: 25 96% 61%;              /* #f97316 naranja */
     --accent-foreground: 0 0% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-    --border: 260 8% 18%;              /* Subtle violet border */
-    --input: 265 30% 25%;              /* Violet input bg */
-    --ring: 270 60% 55%;               /* Violet focus ring */
-    --chart-1: 270 60% 55%;            /* Violet */
-    --chart-2: 35 80% 55%;             /* Amber */
-    --chart-3: 330 55% 50%;            /* Magenta/rose */
-    --chart-4: 290 50% 60%;            /* Light purple */
-    --chart-5: 25 90% 55%;             /* Orange */
+    --border: 220 26% 22%;             /* #2a3347 */
+    --input: 218 28% 16%;              /* #1e2535 */
+    --ring: 25 96% 61%;                /* #f97316 */
+    --chart-1: 25 96% 61%;
+    --chart-2: 38 92% 50%;
+    --chart-3: 158 64% 52%;
+    --chart-4: 280 55% 60%;
+    --chart-5: 0 91% 71%;
     --radius: 0.5rem;
     --success-bg: hsl(143, 85%, 96%);
     --success-border: hsl(145, 92%, 91%);
@@ -56,30 +56,30 @@
   }
 
   .dark {
-    --background: 240 6% 7%;
-    --foreground: 0 0% 96%;
-    --card: 255 15% 11%;
-    --card-foreground: 0 0% 96%;
-    --popover: 255 18% 12%;
-    --popover-foreground: 0 0% 96%;
-    --primary: 270 60% 55%;
+    --background: 228 21% 7%;
+    --foreground: 220 40% 93%;
+    --card: 218 28% 16%;
+    --card-foreground: 220 40% 93%;
+    --popover: 225 28% 14%;
+    --popover-foreground: 220 40% 93%;
+    --primary: 25 96% 61%;
     --primary-foreground: 0 0% 98%;
-    --secondary: 275 40% 28%;
-    --secondary-foreground: 0 0% 96%;
-    --muted: 255 12% 12%;
-    --muted-foreground: 260 10% 58%;
-    --accent: 35 85% 50%;
+    --secondary: 225 28% 14%;
+    --secondary-foreground: 220 22% 61%;
+    --muted: 225 28% 14%;
+    --muted-foreground: 220 22% 61%;
+    --accent: 25 96% 61%;
     --accent-foreground: 0 0% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-    --border: 260 8% 16%;
-    --input: 265 30% 22%;
-    --ring: 270 60% 55%;
-    --chart-1: 270 60% 55%;
-    --chart-2: 35 80% 55%;
-    --chart-3: 330 55% 50%;
-    --chart-4: 290 50% 60%;
-    --chart-5: 25 90% 55%;
+    --border: 220 26% 22%;
+    --input: 218 28% 16%;
+    --ring: 25 96% 61%;
+    --chart-1: 25 96% 61%;
+    --chart-2: 38 92% 50%;
+    --chart-3: 158 64% 52%;
+    --chart-4: 280 55% 60%;
+    --chart-5: 0 91% 71%;
   }
 }
 
