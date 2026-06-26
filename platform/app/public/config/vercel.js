@@ -1,8 +1,5 @@
 /** @type {AppTypes.Config} */
-const _isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-const _orthancBase = _isLocal
-  ? 'http://localhost:8043'
-  : 'https://orthanc.citologianomi.com.ar';
+const _orthancBase = 'https://orthanc.citologianomi.com.ar';
 
 window.config = {
   routerBasename: '/',
@@ -63,9 +60,9 @@ window.config = {
   whiteLabeling: {
     createLogoComponentFn: function (React) {
       return React.createElement('img', {
-        src: './bio_imagenes_white.png',
+        src: './visnova_SF.png',
         alt: 'Bio Imagenes Mendoza',
-        style: { height: '64px', width: 'auto' },
+        style: { height: '44px', width: 'auto' },
       });
     },
   },
