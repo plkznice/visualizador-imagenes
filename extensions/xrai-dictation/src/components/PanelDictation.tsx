@@ -16,9 +16,11 @@ import { RecordingFooter } from './RecordingFooter';
 import { styles } from '../styles/PanelDictation.styles';
 
 export default function PanelDictation() {
+  // Obtenemos los servicios de OHIF para extraer datos del paciente activo
   const { servicesManager } = useSystem();
   const patientInfo = useStudyPatientInfo(servicesManager);
 
+  // Hook orquestador principal: maneja todos los estados del dictado (plantillas, textos, conclusión, estados de grabación)
   const {
     cfg,
     templates,
@@ -45,11 +47,13 @@ export default function PanelDictation() {
     handleSaveReport,
   } = useDictation();
 
+  // Verificamos si ya existe un informe en el servidor para este estudio para bloquear la edición si es necesario
   const { exists: reportExists, checking: checkingReport } = useExistingReport(
     cfg,
     patientInfo?.studyInstanceUID
   );
 
+  // Verificamos si hay algún texto ingresado para habilitar/deshabilitar los botones de guardado
   const hasContent =
     Object.values(organTexts).some(v => v.trim().length > 0) || conclusion.trim().length > 0;
 
@@ -87,6 +91,7 @@ export default function PanelDictation() {
 
       {!checkingReport && !reportExists && !loading && templates.length > 0 && (
         <>
+          {/* Selector de plantilla de informe */}
           <div style={styles.section}>
             <label style={styles.label}>Plantilla</label>
             <select
@@ -100,6 +105,7 @@ export default function PanelDictation() {
             </select>
           </div>
 
+          {/* Renderizado dinámico de los campos de dictado por órgano según la plantilla seleccionada */}
           {allOrgans.length > 0 && (
             <div style={styles.section}>
               <div style={styles.sectionTitle}>Dictado por órgano</div>
@@ -116,6 +122,7 @@ export default function PanelDictation() {
             </div>
           )}
 
+          {/* Sección de conclusión, siempre visible cuando hay una plantilla */}
           <ConclusionSection
             conclusion={conclusion}
             onConclusionChange={handleConclusionChange}
@@ -125,6 +132,7 @@ export default function PanelDictation() {
             onAppend={handleConclusionAppend}
           />
 
+          {/* Botones de acción final: Generar PDF o Guardar en servidor */}
           <ReportActions
             hasContent={hasContent}
             studyInstanceUID={patientInfo?.studyInstanceUID}
@@ -141,6 +149,7 @@ export default function PanelDictation() {
         <div style={styles.info}>No hay plantillas configuradas en XRAI.</div>
       )}
 
+      {/* Botón flotante/footer para grabar el informe completo de una sola vez */}
       {!checkingReport && !reportExists && !loading && templates.length > 0 && (
         <RecordingFooter
           state={fullRecState}

@@ -29,14 +29,20 @@ export function useStudyPatientInfo(servicesManager: unknown): StudyPatientInfo 
       const ds = displaySet as Record<string, unknown>;
       const instances = ds?.instances as unknown[] | undefined;
       const instance = (instances?.[0] ?? ds?.instance) as Record<string, unknown> | undefined;
+      
+      // Si no hay metadatos de instancia DICOM, no podemos extraer la info
       if (!instance) return;
 
+      // Usamos las utilidades de OHIF para formatear el nombre (ej: "Perez^Juan" -> "Juan Perez")
       const name = instance.PatientName
         ? utils.formatPN(instance.PatientName as string)
         : '';
+        
+      // Formateamos la fecha de nacimiento DICOM (ej: "19800101" -> "01-Jan-1980" dependiendo del locale)
       const dob = instance.PatientBirthDate
         ? utils.formatDate(instance.PatientBirthDate as string)
         : '';
+        
       const study = (instance.StudyDescription as string) || '';
       const studyInstanceUID = (instance.StudyInstanceUID as string) || '';
 

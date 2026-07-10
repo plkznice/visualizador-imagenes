@@ -93,9 +93,11 @@ function OHIFCornerstonePdfViewport({ displaySets, viewportId = 'pdf-viewport' }
       if (!rawUrl) return;
 
       try {
-        const response = await fetch(rawUrl, {
-          headers: { Accept: 'application/pdf' },
-        });
+        // NO enviar `Accept: application/pdf`: el plugin DICOMweb de Orthanc
+        // responde 400 ("cannot generate bulk data type: application/pdf") ante
+        // ese header. Con el Accept por defecto entrega multipart/related, que
+        // extractPdfBytes() desenvuelve.
+        const response = await fetch(rawUrl);
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const buffer = await response.arrayBuffer();
         const pdfBytes = extractPdfBytes(buffer, response.headers.get('content-type') || '');
