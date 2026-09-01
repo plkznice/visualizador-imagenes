@@ -9,7 +9,7 @@
 @layer base {
   :root {
     /* Bio Imágenes Mendoza — paleta XRAI (#0f1117 bg, #4f8ef7 accent, #f59e0b amber) */
-    --highlight: 25 96% 61%;            /* #f97316 naranja (detalle de selección) */
+    --highlight: 188 86% 53%;           /* #22d3ee cyan */
     --neutral: 220 22% 61%;            /* #8896b0 texto secundario */
     --neutral-light: 220 40% 93%;      /* #e8edf5 texto primario */
     --neutral-dark: 225 28% 14%;       /* #1a1f2e surface */
