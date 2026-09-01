@@ -29,15 +29,15 @@ module.exports = {
       },
 
       primary: {
-        light: '#fdba74',
-        main: '#fb923c',
+        light: '#67e8f9',
+        main: '#22d3ee',
         dark: '#1e2535',
-        active: '#f97316',
+        active: '#06b6d4',
       },
       inputfield: {
-        main: '#7c3510',
-        disabled: '#5c2a0e',
-        focus: '#fb923c',
+        main: '#164e63',
+        disabled: '#0b3440',
+        focus: '#22d3ee',
         placeholder: '#4d5f7a',
       },
 
@@ -69,9 +69,9 @@ module.exports = {
         secondary: '#7ab3fb',
       },
       actions: {
-        primary: '#fb923c',
-        highlight: '#fb923c',
-        hover: 'rgba(251, 146, 60, 0.2)',
+        primary: '#22d3ee',
+        highlight: '#22d3ee',
+        hover: 'rgba(34, 211, 238, 0.2)',
       },
       customgreen: {
         100: '#34d399',
@@ -82,12 +82,12 @@ module.exports = {
         10: '#0f1117',
         20: '#1a1f2e',
         30: '#1e2535',
-        40: '#7c3510',
+        40: '#164e63',
         50: '#2a3347',
-        80: '#fb923c',
-        100: '#fed7aa',
-        200: '#fdba74',
-        300: '#7c3510',
+        80: '#22d3ee',
+        100: '#cffafe',
+        200: '#67e8f9',
+        300: '#164e63',
         400: '#8896b0',
       },
 
